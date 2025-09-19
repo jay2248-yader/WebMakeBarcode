@@ -1,9 +1,14 @@
 // src/App.jsx
 import React from "react";
-import Login from "./screen/Login";
+import { BrowserRouter as Router } from "react-router-dom";
+import AppRoutes from "./routes/AppRoutes";
 
 function App() {
-  return <Login />; // เรียก component login
+  return (
+    <Router>
+      <AppRoutes />
+    </Router>
+  );
 }
 
 export default App;
