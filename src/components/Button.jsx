@@ -15,21 +15,22 @@ const Button = ({
     red: "bg-red-500 hover:bg-red-600",
     blue: "bg-blue-500 hover:bg-blue-600",
     green: "bg-green-500 hover:bg-green-600",
+    blue800: "bg-blue-800 hover:bg-blue-900",
   };
   const sizes = {
-    sm: "text-sm py-1 px-3",
-    md: "text-md py-2 px-4",
-    lg: "text-lg py-3 px-6",
+    sm: "text-sm py-1 px-4",
+    md: "text-md py-2 px-10",
+    lg: "text-lg py-3 px-10",
   };
 
   const handleClick = async () => {
     if (isDisabled) return;
-    setIsDisabled(true);   // ✅ ปิดการกดทันที
+    setIsDisabled(true);   
     try {
       await onClick?.();
     } finally {
       setTimeout(() => setIsDisabled(false), 1500); 
-      // ✅ เปิดใหม่หลัง 1.5 วิ (กันกดรัวๆ)
+
     }
   };
 

@@ -9,7 +9,7 @@ export default function useLoginForm(initialValues = { username: "", password: "
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
 
-  const navigate = useNavigate(); // ✅ สำหรับ redirect ไปหน้า Home
+  const navigate = useNavigate(); // ✅
 
   const handleChange = (field, value) => {
     setValues((prev) => ({ ...prev, [field]: value }));
