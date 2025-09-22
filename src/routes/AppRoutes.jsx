@@ -3,6 +3,7 @@ import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import Login from "../screen/login";
 import Home from "../screen/Home";
+import ProductDetails from "../screen/productDetails"; // ✅ import หน้าใหม่
 import { useAuthStore } from "../store/authStore";
 
 export default function AppRoutes() {
@@ -19,6 +20,11 @@ export default function AppRoutes() {
       <Route
         path="/home"
         element={token ? <Home /> : <Navigate to="/" />}
+      />
+      {/* Product details */}
+      <Route
+        path="/product/:code"
+        element={token ? <ProductDetails /> : <Navigate to="/" />}
       />
       {/* fallback page */}
       <Route path="*" element={<Navigate to="/" />} />

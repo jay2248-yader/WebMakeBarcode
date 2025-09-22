@@ -3,7 +3,7 @@ import { useAuthStore } from "../store/authStore";
 import { logout } from "./authService";
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL, // ✅ ใช้ env
+  baseURL: import.meta.env.VITE_API_URL, // env
   timeout: 10000,
 });
 

@@ -1,32 +1,41 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import ProductCard from "./productCard";
-import Button from "./Button";
 
-const ProductList = ({ products, onLoadMore }) => {
+const ProductList = ({ products, onLoadMore, hasMore }) => {
   const [isFetching, setIsFetching] = useState(false);
+  const sentinelRef = useRef(null);
 
-  const handleLoadMore = async () => {
-    if (isFetching) return;
-    setIsFetching(true);
-    console.log("⬇️ Start loading more products...");
+  useEffect(() => {
+    if (!sentinelRef.current) return;
 
-    try {
-      await onLoadMore();
-      console.log("✅ Load more finished");
-    } catch (err) {
-      console.error("❌ Load more error:", err);
-    } finally {
-      setIsFetching(false);
-    }
-  };
+    const observer = new IntersectionObserver(
+      async ([entry]) => {
+        if (entry.isIntersecting && !isFetching && hasMore) {
+          setIsFetching(true);
+          try {
+            await onLoadMore();
+          } catch (err) {
+            console.error("❌ Load more error:", err);
+          } finally {
+            setIsFetching(false);
+          }
+        }
+      },
+      { root: null, rootMargin: "0px", threshold: 1.0 }
+    );
 
-  if (!products || !products.length) return <p>No products found.</p>;
+    observer.observe(sentinelRef.current);
+
+    return () => observer.disconnect();
+  }, [isFetching, hasMore, onLoadMore]);
+
+  if (!products || !products.length) return <p className="text-center">No products found.</p>;
 
   return (
     <div className="flex flex-col gap-6 max-h-[670px] overflow-y-auto p-2 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100 rounded-xl">
-      {products.map((p) => (
+      {products.map((p, index) => (
         <ProductCard
-          key={p.CODE}
+          key={`${p.CODE}-${index}`} // ✅ unique key
           code={p.CODE}
           name={p.NAMEEN || p.NAMETH}
           grwarehouse={p.GRWAREHOUSE}
@@ -35,14 +44,12 @@ const ProductList = ({ products, onLoadMore }) => {
         />
       ))}
 
-      <div className="flex justify-center mt-2">
-        <Button
-          text={isFetching ? "Loading..." : "ເບິ່ງຂໍ້ມູນເພິ່ມເຕີມ"}
-          color="blue800"
-          onClick={handleLoadMore}
-          disabled={isFetching}
-        />
-      </div>
+      {/* sentinel element สำหรับ IntersectionObserver */}
+      <div ref={sentinelRef}></div>
+
+      {isFetching && (
+        <p className="text-center text-gray-500">Loading more products...</p>
+      )}
     </div>
   );
 };

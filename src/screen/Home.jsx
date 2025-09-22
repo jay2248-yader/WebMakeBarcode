@@ -1,59 +1,25 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React from "react";
 import { logout } from "../services/authService";
 import Button from "../components/Button";
 import Input from "../components/Input";
 import ProductList from "../components/productList";
-import { fetchProducts } from "../services/productService";
+import useProducts from "../hook/useHome";
 
 const Home = () => {
-  const [products, setProducts] = useState([]);
-  const [limit, setLimit] = useState(25);
-  const [page, setPage] = useState(1);
-  const [search, setSearch] = useState(""); // สถานะคำค้นหา
-  const [loading, setLoading] = useState(false);
+  const {
+    products,
+    loading,
+    hasMore,
+    search,
+    setSearch,
+    handleLoadMore,
+    handleSearch,
+  } = useProducts(25);
 
   const handleLogout = () => {
     logout();
     alert("Logout success!");
     window.location.reload();
-  };
-
-  // โหลดสินค้า
-  const loadProducts = useCallback(
-    async ({ pageNum = 1, limitNum = limit, query = "" } = {}) => {
-      try {
-        setLoading(true);
-        const data = await fetchProducts({
-          page: pageNum,
-          limit: limitNum,
-          search: query,
-        });
-        setProducts(data.data_id.products);
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    },
-    [limit]
-  );
-
-  // โหลดสินค้าครั้งแรก
-  useEffect(() => {
-    loadProducts({ pageNum: page, limitNum: limit });
-  }, [loadProducts, page, limit]);
-
-  // กดปุ่ม Load More
-  const handleLoadMore = async () => {
-    const newLimit = limit + 25;
-    setLimit(newLimit);
-    await loadProducts({ pageNum: page, limitNum: newLimit, query: search });
-  };
-
-  // กดปุ่ม Search
-  const handleSearch = async () => {
-    setPage(1); 
-    await loadProducts({ pageNum: 1, limitNum: limit, query: search });
   };
 
   return (
@@ -70,14 +36,14 @@ const Home = () => {
           text={loading ? "Loading..." : "ຄົ້ນຫາ"}
           color="blue800"
           size="md"
-          onClick={handleSearch}
+          onClick={() => handleSearch(search)}
           disabled={loading}
         />
       </div>
 
       {/* Product list */}
       <div className="bg-white rounded-2xl shadow-md p-6 w-full max-w-5xl">
-        <ProductList products={products} onLoadMore={handleLoadMore} />
+        <ProductList products={products} onLoadMore={handleLoadMore} hasMore={hasMore} />
       </div>
 
       {/* Logout */}
