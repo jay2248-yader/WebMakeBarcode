@@ -29,10 +29,24 @@ const ProductList = ({ products, onLoadMore, hasMore }) => {
     return () => observer.disconnect();
   }, [isFetching, hasMore, onLoadMore]);
 
-  if (!products || !products.length) return <p className="text-center">No products found.</p>;
+  if (!products || !products.length) {
+    return <p className="text-center">No products found.</p>;
+  }
 
   return (
-    <div className="flex flex-col gap-6 max-h-[670px] overflow-y-auto p-2 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100 rounded-xl">
+    <div
+      className="
+        flex flex-col gap-6 overflow-y-auto p-2
+        scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100 
+        rounded-xl
+        max-h-[650px]       /* base: mobile */
+        sm:max-h-[650px]    /* ≥640px */
+        md:max-h-[650px]    /* ≥768px */
+        lg:max-h-[660px]    /* ≥1024px */
+        xl:max-h-[660px]    /* ≥1280px */
+        2xl:max-h-[750px]  /* ≥1536px */
+      "
+    >
       {products.map((p, index) => (
         <ProductCard
           key={`${p.CODE}-${index}`} // ✅ unique key
