@@ -2,13 +2,15 @@ import React, { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import ProductDetailList from "../components/productDetailList";
 import { fetchProductPrice } from "../services/productDetailService";
+import { fetchProductBarcodes } from "../services/productBarcodeService"; 
 
 const ProductDetails = () => {
   const { code } = useParams();
   const [productPrices, setProductPrices] = useState([]);
+  const [barcodeData, setBarcodeData] = useState([]); // ✅ state สำหรับ barcode
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const effectRan = useRef(false); // ref สำหรับป้องกันรันซ้ำ
+  const effectRan = useRef(false);
 
   useEffect(() => {
     if (effectRan.current) return;
@@ -17,15 +19,28 @@ const ProductDetails = () => {
     const fetchApiData = async () => {
       setLoading(true);
       try {
+        // ดึงราคาสินค้า
         const data = await fetchProductPrice(code);
         if (data?.data_id?.productprices) {
           setProductPrices(data.data_id.productprices);
         } else {
           setProductPrices([]);
         }
+
+        // ดึงบาร์โค้ด
+        const barcodeRes = await fetchProductBarcodes(code);
+        if (barcodeRes?.success && barcodeRes.data_id?.products) {
+          setBarcodeData(barcodeRes.data_id.products);
+        } else {
+          setBarcodeData([]);
+        }
+
+        console.log("เรียก API ProductBarcode จาก:", import.meta.env.VITE_API_PRODUCTBARCODES);
+        console.log("ข้อมูลจาก API Barcode:", barcodeRes);
+
       } catch (err) {
         console.error("Error fetching product price:", err);
-        setError("Failed to load product prices.");
+        setError("Failed to load product details.");
       } finally {
         setLoading(false);
       }
@@ -58,7 +73,8 @@ const ProductDetails = () => {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen w-screen p-4 bg-sky-400">
       <div className="w-full max-w-8xl">
-        <ProductDetailList productPrices={productPrices} />
+        {/* ส่ง barcodeData ไปยัง ProductDetailList */}
+        <ProductDetailList productPrices={productPrices} barcodeData={barcodeData} />
       </div>
     </div>
   );
