@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import ProductDetailCard from "./ProductDetailCard";
+import ProductDetailCard from "./productDetailCard";
 
-const ProductDetailList = ({ productPrices = [], barcodeData = [] }) => {
+const ProductDetailList = ({ productPrices = [], barcodeData = [] , addToCart}) => {
   const [isFlipped, setIsFlipped] = useState(false);
   const [visibleCount, setVisibleCount] = useState(1); // สำหรับโหลดทีละอัน
 
@@ -87,6 +87,7 @@ const ProductDetailList = ({ productPrices = [], barcodeData = [] }) => {
             isFlipped={isFlipped}
             disableClick={true}
             barcodeData={isFlipped ? [item] : []}
+            addToCart={addToCart}
           />
         ))}
       </div>

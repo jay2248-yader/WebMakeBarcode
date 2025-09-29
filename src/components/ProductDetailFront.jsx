@@ -3,8 +3,10 @@ import React, { useState } from "react";
 import { FaBarcode, FaWarehouse, FaFileInvoice, FaBalanceScale, FaTag } from "react-icons/fa";
 import BarcodeDisplay from "./BarcodeDisplay";
 
-const ProductDetailFront = ({ productData = {}, DOCNO, UNITCODE, prices = [], barcodes = [] }) => {
+const ProductDetailFront = ({ productData = {}, DOCNO, UNITCODE, prices = [], barcodes = [], addToCart }) => {
   const [showBarcodeModal, setShowBarcodeModal] = useState(false);
+  const [selectedPrice, setSelectedPrice] = useState(prices[0] || null);
+  const [selectedIndex, setSelectedIndex] = useState(0); // track ปุ่มที่เลือก
 
   const SectionTitle = ({ icon, title }) => (
     <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center space-x-3">
@@ -22,12 +24,23 @@ const ProductDetailFront = ({ productData = {}, DOCNO, UNITCODE, prices = [], ba
       </span>
       <div>
         <p className="text-sm font-medium text-gray-500">{title}</p>
-        <p className="text-base font-semibold text-gray-900">
-          {value || "ບໍ່ມີຂໍ້ມູນ"}
-        </p>
+        <p className="text-base font-semibold text-gray-900">{value || "ບໍ່ມີຂໍ້ມູນ"}</p>
       </div>
     </div>
   );
+
+  const handleAddToCart = (barcode) => {
+    if (!selectedPrice) {
+      alert("กรุณาเลือกราคาก่อน");
+      return;
+    }
+    addToCart({
+      ...barcode,
+      NAME: productData.NAMETH,
+      CODE: productData.CODE,
+      PRICE: selectedPrice,
+    });
+  };
 
   return (
     <div className="backdrop-blur-lg bg-white/100 shadow-xl rounded-3xl p-8 w-full max-w-3xl mx-auto border border-gray-100">
@@ -52,13 +65,26 @@ const ProductDetailFront = ({ productData = {}, DOCNO, UNITCODE, prices = [], ba
         <SectionTitle icon={<FaTag />} title="Pricing" />
         <div className="grid grid-cols-2 lg:grid-cols-2 gap-4">
           {prices.map((price, index) => (
-            <div
+            <label
               key={index}
-              className="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-5 text-center shadow hover:shadow-lg transition"
+              className={`cursor-pointer bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-5 text-center shadow hover:shadow-lg transition ${
+                selectedIndex === index ? "ring-2 ring-green-500" : ""
+              }`}
             >
+              <input
+                type="radio"
+                name="price"
+                value={price}
+                checked={selectedIndex === index}
+                onChange={() => {
+                  setSelectedPrice(price);
+                  setSelectedIndex(index); // track ปุ่มที่เลือก
+                }}
+                className="hidden"
+              />
               <p className="font-semibold text-sm text-gray-600">Price {index + 1}</p>
               <p className="text-green-700 font-black text-2xl mt-2">{price || "ບໍ່ມີຂໍ້ມູນ"}</p>
-            </div>
+            </label>
           ))}
         </div>
       </div>
@@ -97,22 +123,40 @@ const ProductDetailFront = ({ productData = {}, DOCNO, UNITCODE, prices = [], ba
         <SectionTitle icon={<FaBarcode />} title="Barcodes" />
         <div className="space-y-4">
           {barcodes && barcodes.length > 0 ? (
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                setShowBarcodeModal(true);
-              }}
-              className="w-full p-4 bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl border border-gray-200 text-gray-800 text-sm flex flex-col sm:flex-row sm:items-center sm:justify-between shadow-sm hover:shadow-md transition"
-            >
-              <span className="font-mono text-base font-semibold">{barcodes.length} Barcode(s) available</span>
-              <span className="text-gray-500 text-xs md:text-sm mt-2 sm:mt-0">Click to view</span>
-            </button>
+            <div className="flex flex-col space-y-2">
+              {barcodes.map((bc, idx) => (
+                <div key={idx} className="flex justify-between items-center bg-gradient-to-r from-gray-50 to-gray-100 p-3 rounded-xl shadow hover:shadow-md transition">
+                  <span className="font-mono font-semibold">{bc.BARCODE}</span>
+                  {addToCart && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleAddToCart(bc);
+                      }}
+                      className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
+                    >
+                      ➕ Add to Cart
+                    </button>
+                  )}
+                </div>
+              ))}
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowBarcodeModal(true);
+                }}
+                className="mt-2 text-sm text-gray-500 underline"
+              >
+                View all barcodes
+              </button>
+            </div>
           ) : (
             <p className="text-gray-500">ບໍ່ມີຂໍ້ມູນ Barcode</p>
           )}
         </div>
       </div>
 
+      {/* Barcode Modal */}
       {showBarcodeModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
           <div className="bg-white rounded-2xl p-6 max-w-xl w-full relative shadow-lg mx-4">
@@ -122,7 +166,7 @@ const ProductDetailFront = ({ productData = {}, DOCNO, UNITCODE, prices = [], ba
             >
               ✖
             </button>
-            <BarcodeDisplay barcodes={barcodes} />
+            <BarcodeDisplay barcodes={barcodes} addToCart={handleAddToCart} />
           </div>
         </div>
       )}

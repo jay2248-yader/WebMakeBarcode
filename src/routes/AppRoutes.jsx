@@ -1,9 +1,9 @@
-// src/routes/AppRoutes.jsx
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import Login from "../screen/login";
 import Home from "../screen/Home";
-import ProductDetails from "../screen/productDetails"; // ✅ import หน้าใหม่
+import ProductDetails from "../screen/productDetails"; // ✅ หน้า ProductDetails
+import BarcodeCart from "../screen/BarcodeCart"; // ✅ หน้า BarcodeCart
 import { useAuthStore } from "../store/authStore";
 
 export default function AppRoutes() {
@@ -25,6 +25,11 @@ export default function AppRoutes() {
       <Route
         path="/product/:code"
         element={token ? <ProductDetails /> : <Navigate to="/" />}
+      />
+      {/* Barcode Cart */}
+      <Route
+        path="/barcode-cart"
+        element={token ? <BarcodeCart /> : <Navigate to="/" />}
       />
       {/* fallback page */}
       <Route path="*" element={<Navigate to="/" />} />
