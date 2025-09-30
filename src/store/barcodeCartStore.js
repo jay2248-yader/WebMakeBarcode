@@ -10,12 +10,12 @@ export const useBarcodeCartStore = create(
         // ➕ เพิ่มบาร์โค้ด
         addBarcode: (barcode) => {
           const existing = get().barcodes.find(
-            (item) => item.BARCODE === barcode.BARCODE
+            (item) => item.BARCODE === barcode.BARCODE && item.PRICE === barcode.PRICE
           );
           if (existing) {
             set({
               barcodes: get().barcodes.map((item) =>
-                item.BARCODE === barcode.BARCODE
+                item.BARCODE === barcode.BARCODE && item.PRICE === barcode.PRICE
                   ? { ...item, quantity: item.quantity + 1 }
                   : item
               ),
@@ -32,7 +32,7 @@ export const useBarcodeCartStore = create(
           set({
             barcodes: get().barcodes
               .map((item) =>
-                item.BARCODE === barcode.BARCODE
+                item.BARCODE === barcode.BARCODE && item.PRICE === barcode.PRICE
                   ? { ...item, quantity: item.quantity - 1 }
                   : item
               )
@@ -44,7 +44,7 @@ export const useBarcodeCartStore = create(
         removeBarcode: (barcode) => {
           set({
             barcodes: get().barcodes.filter(
-              (item) => item.BARCODE !== barcode.BARCODE
+              (item) => !(item.BARCODE === barcode.BARCODE && item.PRICE === barcode.PRICE)
             ),
           });
         },

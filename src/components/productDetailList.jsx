@@ -29,26 +29,24 @@ const ProductDetailList = ({ productPrices = [], barcodeData = [] , addToCart}) 
 
   const dataToDisplay = isFlipped ? barcodeData : productPrices;
 
-  useEffect(() => {
-    setVisibleCount(1); // รีเซ็ตเมื่อ flip
-    if (dataToDisplay.length <= 1) return;
+useEffect(() => {
+  setVisibleCount(1);
+  if (dataToDisplay.length <= 1) return;
 
-    const interval = setInterval(() => {
-      setVisibleCount((prev) => {
-        const next = prev + 1;
-        console.log(
-          `Rendering card ${next} / ${dataToDisplay.length} - ${
-            isFlipped ? "Back (Barcode)" : "Front (Price)"
-          }`
-        );
-        if (next >= dataToDisplay.length) {
-          clearInterval(interval);
-        }
-        return next;
-      });
-    }, 200); // เวลา delay ระหว่าง render การ์ด
-    return () => clearInterval(interval);
-  }, [dataToDisplay, isFlipped]);
+  let intervalId;
+  intervalId = setInterval(() => {
+    setVisibleCount((prev) => {
+      const next = prev + 1;
+      if (next >= dataToDisplay.length) {
+        clearInterval(intervalId);
+      }
+      return next;
+    });
+  }, 200);
+
+  return () => clearInterval(intervalId); // cleanup ป้องกัน interval ค้าง
+}, [dataToDisplay, isFlipped]);
+
 
   // กรณีไม่มีข้อมูล
   if (!dataToDisplay.length) {
@@ -70,6 +68,7 @@ const ProductDetailList = ({ productPrices = [], barcodeData = [] , addToCart}) 
             isFlipped={isFlipped}
             disableClick={true}
             barcodeData={isFlipped ? [item] : []}
+            addToCart={addToCart} 
           />
         </div>
       </div>
