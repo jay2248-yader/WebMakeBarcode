@@ -19,7 +19,7 @@ const BarcodeItem = ({
           format: barcodeType,
           width: barcodeWidth,
           height: barcodeHeight,
-          displayValue: false, // ไม่แสดงตัวเลขใต้บาร์โค้ด
+          displayValue: false,
           margin: 0,
           background: "#ffffff",
           lineColor: lineColor,
@@ -46,7 +46,7 @@ const BarcodeItem = ({
         padding: "2mm",
         boxSizing: "border-box",
         background: "#fff",
-        fontFamily: "'Noto Sans Lao', 'sans-serif",
+        fontFamily: "'Noto Sans Lao', sans-serif",
         fontSize: "12pt",
       }}
     >
@@ -54,7 +54,7 @@ const BarcodeItem = ({
       <div
         style={{
           textAlign: "center",
-          fontSize: "7pt",
+          fontSize: "8pt",
           fontWeight: "bold",
           marginTop:"-5px",
           letterSpacing: "0.5px",
@@ -67,7 +67,7 @@ const BarcodeItem = ({
       <div
         style={{
           textAlign: "center",
-          fontSize: "6pt",
+          fontSize: "7pt",
         
         }}
       >
@@ -79,13 +79,11 @@ const BarcodeItem = ({
         style={{
           textAlign: "center",
           marginBottom: "1mm",
-          fontSize: "6pt",
+          fontSize: "7pt",
         }}
       >
         (IP)สูงกึ่งบนงาน  18 สิ้น/สูง
       </div>
-
-
 
       {/* พื้นที่บาร์โค้ด */}
       <div
@@ -111,7 +109,7 @@ const BarcodeItem = ({
       <div
         style={{
           textAlign: "center",
-          fontSize: "7pt",
+          fontSize: "8pt",
           fontWeight: "bold",
         }}
       >
