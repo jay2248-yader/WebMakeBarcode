@@ -4,6 +4,7 @@ import Input from "../components/Input";
 import ProductList from "../components/productList";
 import useProducts from "../hook/useHome";
 import useAuthStore from "../store/authStore";
+import CartIcon from "../components/cartIcon"; // ✅ import CartIcon
 
 const Home = () => {
   const {
@@ -16,13 +17,12 @@ const Home = () => {
     handleSearch,
   } = useProducts(25);
 
-  // ดึง user และฟังก์ชัน logout จาก store
   const { user, clearAuth } = useAuthStore();
 
   const handleLogout = () => {
     clearAuth();
     alert("Logout success!");
-    window.location.reload(); // หรือ navigate ไปหน้า login แทน
+    window.location.reload();
   };
 
   if (!user) {
@@ -34,19 +34,19 @@ const Home = () => {
   }
 
   return (
-    <div className="flex flex-col items-center min-h-screen bg-sky-400 p-4 space-y-4">
+    <div className="relative flex flex-col items-center min-h-screen bg-sky-400 p-4 space-y-4">
+      {/* ✅ Cart Icon มุมขวาบน */}
+      <div className="absolute top-4 right-4 z-20">
+        <CartIcon />
+      </div>
+
       {/* Profile section */}
       <div className="bg-white rounded-xl shadow-md p-4 w-full max-w-5xl flex items-center justify-between">
         <div>
           <p className="text-gray-700 text-sm">ລະຫັດພະນັກງານ: {user.code}</p>
           <p className="text-gray-900 font-semibold">{user.name}</p>
         </div>
-        <Button
-          text="LOGOUT"
-          color="red"
-          size="sm"
-          onClick={handleLogout}
-        />
+        <Button text="LOGOUT" color="red" size="sm" onClick={handleLogout} />
       </div>
 
       {/* Search bar */}
@@ -55,7 +55,7 @@ const Home = () => {
           label=""
           placeholder="ໃສ່ຊື່ສິນຄ້າ ຫຼື ລະຫັດສິນຄ້າ"
           value={search}
-           maxLength={20} 
+          maxLength={20}
           onChange={(e) => setSearch(e.target.value)}
         />
         <Button

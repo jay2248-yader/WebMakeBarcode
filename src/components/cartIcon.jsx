@@ -29,7 +29,7 @@ const CartIcon = () => {
 
         {/* Tooltip */}
         <span className="absolute right-16 top-1/2 -translate-y-1/2 bg-gray-900 text-white text-sm px-3 py-1 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-          ดูตะกร้า
+          ເບິ່ງກະຕ່າ Barcode
         </span>
       </div>
     </div>

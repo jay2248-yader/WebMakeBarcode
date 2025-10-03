@@ -7,6 +7,7 @@ const ProductDetailFront = ({ productData = {}, DOCNO, UNITCODE, prices = [], ba
   const [showBarcodeModal, setShowBarcodeModal] = useState(false);
   const [selectedPrice, setSelectedPrice] = useState(prices[0] || null);
   const [selectedIndex, setSelectedIndex] = useState(0); // track ปุ่มที่เลือก
+  const [quantity, setQuantity] = useState(1); // จำนวนที่จะเพิ่ม
 
   const SectionTitle = ({ icon, title }) => (
     <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center space-x-3">
@@ -34,12 +35,19 @@ const ProductDetailFront = ({ productData = {}, DOCNO, UNITCODE, prices = [], ba
       alert("กรุณาเลือกราคาก่อน");
       return;
     }
-    addToCart({
-      ...barcode,
-      NAME: productData.NAMETH,
-      CODE: productData.CODE,
-      PRICE: selectedPrice,
-    });
+    
+    // เพิ่มตามจำนวนที่เลือก
+    for (let i = 0; i < quantity; i++) {
+      addToCart({
+        ...barcode,
+        NAME: productData.NAMETH,
+        CODE: productData.CODE,
+        PRICE: selectedPrice,
+      });
+    }
+    
+    // รีเซ็ตจำนวนกลับเป็น 1
+    setQuantity(1);
   };
 
   return (
@@ -118,6 +126,37 @@ const ProductDetailFront = ({ productData = {}, DOCNO, UNITCODE, prices = [], ba
         )}
       </div>
 
+      {/* Quantity Selection */}
+      <div className="mt-8 pt-6 border-t border-gray-200">
+        <SectionTitle icon={<FaTag />} title="Quantity" />
+        <div className="flex items-center space-x-4 bg-gradient-to-r from-blue-50 to-blue-100 p-4 rounded-xl">
+          <label className="text-sm font-medium text-gray-700">ຈຳນວນ:</label>
+          <div className="flex items-center space-x-2">
+            <button
+              onClick={() => setQuantity(Math.max(1, quantity - 1))}
+              className="w-8 h-8 bg-gray-200 hover:bg-gray-300 rounded-full flex items-center justify-center transition"
+            >
+              −
+            </button>
+            <input
+              type="number"
+              min="1"
+              max="999"
+              value={quantity}
+              onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
+              className="w-16 text-center border border-gray-300 rounded-lg py-1 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+            <button
+              onClick={() => setQuantity(quantity + 1)}
+              className="w-8 h-8 bg-gray-200 hover:bg-gray-300 rounded-full flex items-center justify-center transition"
+            >
+              +
+            </button>
+          </div>
+          <span className="text-sm text-gray-600"></span>
+        </div>
+      </div>
+
       {/* Barcodes */}
       <div className="mt-8 pt-6 border-t border-gray-200">
         <SectionTitle icon={<FaBarcode />} title="Barcodes" />
@@ -135,7 +174,7 @@ const ProductDetailFront = ({ productData = {}, DOCNO, UNITCODE, prices = [], ba
                       }}
                       className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
                     >
-                      ➕ Add to Cart
+                      ➕ Add {quantity} to Cart
                     </button>
                   )}
                 </div>

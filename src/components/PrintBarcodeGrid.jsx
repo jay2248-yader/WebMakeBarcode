@@ -16,13 +16,26 @@ const PrintBarcodeGrid = ({
   paperWidth,
   paperHeight
 }) => {
+  // แปลง barcodes ให้แสดงแต่ละ quantity เป็น item แยก (เหมือน BarcodePreview)
+  const expandedBarcodes = [];
+  barcodes.forEach(item => {
+    const quantity = item.quantity || 1;
+    for (let i = 0; i < quantity; i++) {
+      expandedBarcodes.push({
+        ...item,
+        // เพิ่ม unique key เพื่อไม่ให้ซ้ำ
+        _uniqueId: `${item.BARCODE}-${item.PRICE}-${i}`
+      });
+    }
+  });
+
   // คำนวณจำนวน items ต่อหน้า
   const itemsPerPage = columns * rows;
   
   // สร้าง array สำหรับแต่ละหน้า
   const pages = [];
-  for (let i = 0; i < barcodes.length; i += itemsPerPage) {
-    pages.push(barcodes.slice(i, i + itemsPerPage));
+  for (let i = 0; i < expandedBarcodes.length; i += itemsPerPage) {
+    pages.push(expandedBarcodes.slice(i, i + itemsPerPage));
   }
 
   return (
@@ -46,7 +59,7 @@ const PrintBarcodeGrid = ({
         >
           {pageBarcodes.map((item, idx) => (
             <BarcodeItem
-              key={`${item.BARCODE}-${pageIndex}-${idx}`}
+              key={item._uniqueId || `${item.BARCODE}-${pageIndex}-${idx}`}
               item={item}
               barcodeType={barcodeType}
               lineColor={lineColor}

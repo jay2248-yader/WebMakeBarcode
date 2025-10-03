@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   FaBarcode,
   FaFileInvoice,
@@ -32,6 +32,8 @@ const renderInfoItem = (icon, title, value) => (
 );
 
 const ProductDetailBack = ({ barcodeData, addToCart }) => {
+  const [quantity, setQuantity] = useState(1); // จำนวนที่จะเพิ่ม
+
   const barcodeList = Array.isArray(barcodeData)
     ? barcodeData
     : barcodeData?.data_id?.products || [];
@@ -91,6 +93,37 @@ const ProductDetailBack = ({ barcodeData, addToCart }) => {
         </div>
       </div>
 
+      {/* Quantity Selection */}
+      <div className="mt-8 pt-6 border-t border-gray-200">
+        <SectionTitle icon={<FaTag />} title="Quantity" />
+        <div className="flex items-center space-x-4 bg-gradient-to-r from-orange-50 to-orange-100 p-4 rounded-xl">
+          <label className="text-sm font-medium text-gray-700">ຈຳນວນ:</label>
+          <div className="flex items-center space-x-2">
+            <button
+              onClick={() => setQuantity(Math.max(1, quantity - 1))}
+              className="w-8 h-8 bg-gray-200 hover:bg-gray-300 rounded-full flex items-center justify-center transition"
+            >
+              −
+            </button>
+            <input
+              type="number"
+              min="1"
+              max="999"
+              value={quantity}
+              onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
+              className="w-16 text-center border border-gray-300 rounded-lg py-1 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+            />
+            <button
+              onClick={() => setQuantity(quantity + 1)}
+              className="w-8 h-8 bg-gray-200 hover:bg-gray-300 rounded-full flex items-center justify-center transition"
+            >
+              +
+            </button>
+          </div>
+          <span className="text-sm text-gray-600"></span>
+        </div>
+      </div>
+
       {/* Barcodes */}
       <div className="mt-8 pt-6 border-t border-gray-200">
         <SectionTitle icon={<FaBarcode />} title="Barcodes" />
@@ -118,10 +151,23 @@ const ProductDetailBack = ({ barcodeData, addToCart }) => {
                 </p>
               </div>
               <button
-                onClick={() => addToCart(bc)}
-                className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition h-min self-center"
+                onClick={() => {
+                  // เพิ่มตามจำนวนที่เลือก
+                  for (let i = 0; i < quantity; i++) {
+                    addToCart({
+                      ...bc,
+                      NAME: product?.NAMETH,
+                      CODE: product?.CODE,
+                      PRICE: "ไม่มีราคา", // แสดงข้อความแทนราคา
+                    });
+                  }
+                  // รีเซ็ตจำนวนกลับเป็น 1
+                  setQuantity(1);
+                }}
+                className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition h-min self-center"
+                title="เพิ่มโดยไม่มีราคา - สามารถแก้ไขราคาภายหลัง"
               >
-                ➕ Add to Cart
+                ➕ Add {quantity} (No Price)
               </button>
             </div>
           ))}

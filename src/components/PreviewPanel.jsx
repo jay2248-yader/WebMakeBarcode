@@ -18,14 +18,15 @@ const PreviewPanel = ({
   zoom
 }) => {
   return (
-    <div className="flex-1 bg-gray-100 p-8 mt-16 overflow-auto">
-      <div 
-        className="bg-white p-4 inline-block shadow"
-        style={{
-          transform: `scale(${zoom})`,
-          transformOrigin: 'top left',
-        }}
-      >
+    <div className="flex-1 bg-gradient-to-br from-gray-50 to-gray-100 p-8 overflow-auto">
+      <div className="max-w-full">
+        <div 
+          className="bg-white p-6 inline-block shadow-xl rounded-2xl border border-gray-200"
+          style={{
+            transform: `scale(${zoom})`,
+            transformOrigin: 'top left',
+          }}
+        >
         <BarcodePreview
           currentBarcodes={barcodes}
           labelWidth={labelWidth}
@@ -41,6 +42,7 @@ const PreviewPanel = ({
           paperWidth={paperWidth}
           paperHeight={paperHeight}
         />
+        </div>
       </div>
     </div>
   );

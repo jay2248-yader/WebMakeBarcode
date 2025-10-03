@@ -131,8 +131,28 @@ const BarcodeCart = () => {
   };
 
   return (
-    <div className="min-h-screen flex">
-      <PrintSettingsPanel
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+      {/* Header */}
+      <div className="backdrop-blur-lg bg-white/80 shadow-lg border-b border-gray-200/50">
+        <div className="max-w-7xl mx-auto px-6 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <div className="p-3 rounded-full bg-gradient-to-br from-indigo-100 to-indigo-200 text-indigo-600 shadow-inner">
+                <FiHelpCircle className="w-6 h-6" />
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900">Barcode Cart</h1>
+                <p className="text-sm text-gray-600">จัดการและพิมพ์ label บาร์โค้ด</p>
+              </div>
+            </div>
+            <div className="flex items-center space-x-4">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="flex">
+        <PrintSettingsPanel
         presets={presets}
         applyPreset={applyPreset}
         paperWidth={paperWidth}
@@ -184,10 +204,7 @@ const BarcodeCart = () => {
         zoom={zoom}
       />
 
-      <button className="fixed bottom-6 right-6 bg-blue-600 text-white p-4 rounded-full shadow-lg hover:bg-blue-700 flex items-center space-x-2 no-print">
-        <FiHelpCircle className="w-5 h-5" />
-        <span>Help</span>
-      </button>
+      </div>
     </div>
   );
 };

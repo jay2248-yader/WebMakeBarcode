@@ -1,5 +1,6 @@
 import React from "react";
 import JsBarcode from "jsbarcode";
+import CSCLogo from "../assets/CSCLogo.webp"; // ✅ import โลโก้
 
 const BarcodeItem = ({
   item,
@@ -15,20 +16,24 @@ const BarcodeItem = ({
   React.useEffect(() => {
     if (canvasRef.current) {
       try {
-        JsBarcode(canvasRef.current, item.BARCODE || item.barcode || item.code || "", {
-          format: barcodeType,
-          width: barcodeWidth,
-          height: barcodeHeight,
-          displayValue: false, // ไม่แสดงตัวเลขใต้บาร์โค้ด
-          margin: 0,
-          background: "#ffffff",
-          lineColor: lineColor,
-          valid: function(valid) {
-            if (!valid) {
-              console.warn("Invalid barcode");
-            }
+        JsBarcode(
+          canvasRef.current,
+          item.BARCODE || item.barcode || item.code || "000000000000",
+          {
+            format: barcodeType,
+            width: barcodeWidth,
+            height: barcodeHeight,
+            displayValue: false,
+            margin: 0,
+            background: "#ffffff",
+            lineColor: lineColor,
+            valid: function (valid) {
+              if (!valid) {
+                console.warn("Invalid barcode");
+              }
+            },
           }
-        });
+        );
       } catch (error) {
         console.error("Barcode generation error:", error);
       }
@@ -43,80 +48,110 @@ const BarcodeItem = ({
         display: "flex",
         flexDirection: "column",
         border: "1px solid #000",
-        padding: "2mm",
+        padding: "0.7mm",
         boxSizing: "border-box",
         background: "#fff",
-        fontFamily: "'Noto Sans Lao', 'sans-serif",
+        fontFamily: "'Noto Sans Lao', 'sans-serif'",
         fontSize: "12pt",
       }}
     >
-      {/* รหัสสินค้า - ตัวใหญ่กลาง */}
+      {/* โลโก้ซ้ายสุด + รหัสสินค้ากลาง */}
       <div
         style={{
-          textAlign: "center",
-          fontSize: "7pt",
-          fontWeight: "bold",
-          marginTop:"-5px",
-          letterSpacing: "0.5px",
+          display: "flex",
+          alignItems: "center",
+          position: "relative",
+  
         }}
       >
-        {item.BARCODE || item.barcode || item.code || "H0010890"}
+        {/* โลโก้ซ้ายสุด */}
+        <img
+          src={CSCLogo}
+          alt="CSC Logo"
+          style={{
+            width: "18px",
+            height: "18px",
+            objectFit: "contain",
+            position: "absolute",
+            left: 0,
+          }}
+        />
+
+        {/* รหัสสินค้า (ตัวใหญ่กลาง) */}
+        <div
+          style={{
+            fontSize: "7pt",
+            fontWeight: "bold",
+            letterSpacing: "0.5px",
+            textAlign: "center",
+            width: "100%", // ให้ text กึ่งกลางเสมอ
+          }}
+        >
+          {item.BARCODE || item.barcode || item.code || "N/A"}
+        </div>
       </div>
-
-      {/* ระดับพื้นที่ หน้าแพทย์ */}
-      <div
-        style={{
-          textAlign: "center",
-          fontSize: "6pt",
-        
-        }}
-      >
-        ລະຫັດສິນຄ້າ
-      </div>
-
-      {/* ข้อมูลในวงเล็บ */}
-      <div
-        style={{
-          textAlign: "center",
-          marginBottom: "1mm",
-          fontSize: "6pt",
-        }}
-      >
-        (IP)สูงกึ่งบนงาน  18 สิ้น/สูง
-      </div>
-
-
 
       {/* พื้นที่บาร์โค้ด */}
       <div
         style={{
-          flex: 1,
           display: "flex",
-          flexDirection: "column",
           justifyContent: "center",
           alignItems: "center",
+          margin: "1px 0 3px 0",
+          flex: "0 0 auto",
         }}
       >
-        <canvas 
+        <canvas
           ref={canvasRef}
           style={{
             maxWidth: "100%",
-            maxHeight: "100%",
+            height: "auto",
             display: "block",
           }}
         />
       </div>
 
-      {/* ราคา */}
+      {/* ชื่อสินค้า */}
       <div
         style={{
           textAlign: "center",
-          fontSize: "7pt",
-          fontWeight: "bold",
+          fontSize: "6pt",
+          width: "100%",
+          wordBreak: "break-all",
+          whiteSpace: "normal",
+          lineHeight: "1.2",
+          marginTop: "1px",
         }}
       >
-        ລາຄາ {item.price ? `${parseFloat(item.price).toLocaleString('th-TH')} KIP` : "1,890.900 KIP"}
+        {item.NAME || item.NAMETH || "ບໍ່ມີຂໍ້ມູນ"}
       </div>
+
+      {/* รหัสสินค้า (CODE) */}
+      <div
+        style={{
+          textAlign: "center",
+          fontSize: "6pt",
+        }}
+      >
+        {item.CODE ? `ລະຫັດສິນຄ້າ (${item.CODE})` : ""}
+      </div>
+
+      {/* ราคา */}
+      {item.PRICE &&
+        item.PRICE !== "ไม่มีราคา" &&
+        item.PRICE !== "N/A" &&
+        item.PRICE !== null && (
+          <div
+            style={{
+              marginTop: "-3px",
+              textAlign: "center",
+              fontSize: "7pt",
+              fontWeight: "bold",
+            }}
+          >
+            ລາຄາ {item.PRICE}
+          </div>
+        )}
     </div>
   );
 };
