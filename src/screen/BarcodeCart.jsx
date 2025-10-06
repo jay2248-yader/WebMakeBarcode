@@ -62,8 +62,8 @@ const BarcodeCart = () => {
 
   const [barcodeType, setBarcodeType] = useState("CODE128");
   const [lineColor, setLineColor] = useState("#000000");
-  const [barcodeWidth, setBarcodeWidth] = useState(2);
-  const [barcodeHeight, setBarcodeHeight] = useState(25);
+  const [barcodeWidth, setBarcodeWidth] = useState(1);
+  const [barcodeHeight, setBarcodeHeight] = useState(28);
 
   const [zoom, setZoom] = useState(1);
 
@@ -126,30 +126,13 @@ const BarcodeCart = () => {
   };
 
   const handleExportPDF = async () => {
-    // ใช้ฟังก์ชันพิมพ์เดียวกัน แต่ให้ผู้ใช้เลือก "Save as PDF" ใน dialog print
     handlePrint();
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
       {/* Header */}
-      <div className="backdrop-blur-lg bg-white/80 shadow-lg border-b border-gray-200/50">
-        <div className="max-w-7xl mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <div className="p-3 rounded-full bg-gradient-to-br from-indigo-100 to-indigo-200 text-indigo-600 shadow-inner">
-                <FiHelpCircle className="w-6 h-6" />
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900">Barcode Cart</h1>
-                <p className="text-sm text-gray-600">จัดการและพิมพ์ label บาร์โค้ด</p>
-              </div>
-            </div>
-            <div className="flex items-center space-x-4">
-            </div>
-          </div>
-        </div>
-      </div>
+     
 
       <div className="flex">
         <PrintSettingsPanel

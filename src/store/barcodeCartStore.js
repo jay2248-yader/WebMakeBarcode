@@ -51,7 +51,19 @@ export const useBarcodeCartStore = create(
 
         // 🧹 เคลียร์ทั้งหมด
         clearCart: () => set({ barcodes: [] }),
+
+updateBarcodeName: (barcode, newName) => {
+          set({
+            barcodes: get().barcodes.map((item) =>
+              item.BARCODE === barcode.BARCODE && item.PRICE === barcode.PRICE
+                ? { ...item, NAME: newName }
+                : item
+            ),
+          });
+        },
+
       }),
+      
       {
         name: "BarcodeCartStore", // key ใน localStorage
         getStorage: () => localStorage,

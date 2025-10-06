@@ -4,7 +4,7 @@ import Input from "../components/Input";
 import ProductList from "../components/productList";
 import useProducts from "../hook/useHome";
 import useAuthStore from "../store/authStore";
-import CartIcon from "../components/cartIcon"; // ✅ import CartIcon
+import CartIcon from "../components/cartIcon";
 
 const Home = () => {
   const {
@@ -34,8 +34,8 @@ const Home = () => {
   }
 
   return (
-    <div className="relative flex flex-col items-center min-h-screen bg-sky-400 p-4 space-y-4">
-      {/* ✅ Cart Icon มุมขวาบน */}
+    <div className="relative flex flex-col items-center min-h-screen bg-sky-400 p-4 space-y-4 flex-1">
+      {/* ✅ Cart Icon */}
       <div className="absolute top-4 right-4 z-20">
         <CartIcon />
       </div>
@@ -67,8 +67,8 @@ const Home = () => {
         />
       </div>
 
-      {/* Product list */}
-      <div className="bg-white rounded-2xl shadow-md p-6 w-full max-w-5xl">
+      {/* Product list container */}
+      <div className="bg-white rounded-2xl shadow-md p-4 w-full max-w-5xl flex-1 min-h-0 flex flex-col overflow-hidden">
         <ProductList
           products={products}
           onLoadMore={handleLoadMore}

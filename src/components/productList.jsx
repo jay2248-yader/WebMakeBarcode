@@ -25,27 +25,28 @@ const ProductList = ({ products, onLoadMore, hasMore }) => {
     );
 
     observer.observe(sentinelRef.current);
-
     return () => observer.disconnect();
   }, [isFetching, hasMore, onLoadMore]);
 
   if (!products || !products.length) {
-    return <p className="text-center">No products found.</p>;
+    return <p className="text-center text-gray-600 py-4">No products found.</p>;
   }
 
   return (
     <div
       className="
-        flex flex-col gap-6 overflow-y-auto p-2
+        flex flex-col gap-4
+        overflow-y-auto p-3 sm:p-4 md:p-5
         scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100 
         rounded-xl
-        max-h-[650px]       /* base: mobile */
-        sm:max-h-[650px]    /* ≥640px */
-        md:max-h-[650px]    /* ≥768px */
-        lg:max-h-[660px]    /* ≥1024px */
-        xl:max-h-[660px]    /* ≥1280px */
-        2xl:max-h-[750px]  /* ≥1536px */
+        flex-1 min-h-0
+        w-full
+        transition-all duration-300 ease-in-out
       "
+      style={{
+        scrollBehavior: "smooth",
+        maxHeight: "75vh",
+      }}
     >
       {products.map((p, index) => (
         <ProductCard
@@ -59,10 +60,12 @@ const ProductList = ({ products, onLoadMore, hasMore }) => {
       ))}
 
       {/* sentinel element สำหรับ IntersectionObserver */}
-      <div ref={sentinelRef}></div>
+      <div ref={sentinelRef} />
 
       {isFetching && (
-        <p className="text-center text-gray-500">Loading more products...</p>
+        <p className="text-center text-gray-500 py-2">
+          Loading more products...
+        </p>
       )}
     </div>
   );

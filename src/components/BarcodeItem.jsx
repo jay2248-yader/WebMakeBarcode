@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 import JsBarcode from "jsbarcode";
-import CSCLogo from "../assets/CSCLogo.webp"; // ✅ import โลโก้
+import CSCLogo from "../assets/CSCLogo.webp";
+import useBarcodeCartStore from "../store/barcodeCartStore";
 
 const BarcodeItem = ({
   item,
@@ -11,9 +12,12 @@ const BarcodeItem = ({
   labelWidth,
   labelHeight,
 }) => {
-  const canvasRef = React.useRef(null);
+  const canvasRef = useRef(null);
+  const [editingName, setEditingName] = useState(false);
+  const [name, setName] = useState(item.NAME || item.NAMETH || "");
+  const updateBarcodeName = useBarcodeCartStore((state) => state.updateBarcodeName);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (canvasRef.current) {
       try {
         JsBarcode(
@@ -28,9 +32,7 @@ const BarcodeItem = ({
             background: "#ffffff",
             lineColor: lineColor,
             valid: function (valid) {
-              if (!valid) {
-                console.warn("Invalid barcode");
-              }
+              if (!valid) console.warn("Invalid barcode");
             },
           }
         );
@@ -39,6 +41,22 @@ const BarcodeItem = ({
       }
     }
   }, [item, barcodeType, lineColor, barcodeWidth, barcodeHeight]);
+
+  const handleNameClick = () => setEditingName(true);
+
+  const handleNameChange = (e) => setName(e.target.value);
+
+  const handleNameBlur = () => {
+    setEditingName(false);
+    updateBarcodeName(item, name); // อัปเดต store
+  };
+
+  const handleNameKeyDown = (e) => {
+    if (e.key === "Enter") {
+      setEditingName(false);
+      updateBarcodeName(item, name); // อัปเดต store
+    }
+  };
 
   return (
     <div
@@ -56,102 +74,50 @@ const BarcodeItem = ({
       }}
     >
       {/* โลโก้ซ้ายสุด + รหัสสินค้ากลาง */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          position: "relative",
-  
-        }}
-      >
-        {/* โลโก้ซ้ายสุด */}
+      <div style={{ display: "flex", alignItems: "center", position: "relative" }}>
         <img
           src={CSCLogo}
           alt="CSC Logo"
-          style={{
-            width: "18px",
-            height: "18px",
-            objectFit: "contain",
-            position: "absolute",
-            left: 0,
-          }}
+          style={{ width: "18px", height: "18px", objectFit: "contain", position: "absolute", left: 0 }}
         />
-
-        {/* รหัสสินค้า (ตัวใหญ่กลาง) */}
-        <div
-          style={{
-            fontSize: "7pt",
-            fontWeight: "bold",
-            letterSpacing: "0.5px",
-            textAlign: "center",
-            width: "100%", // ให้ text กึ่งกลางเสมอ
-          }}
-        >
+        <div style={{ fontSize: "7pt", fontWeight: "bold", letterSpacing: "0.5px", textAlign: "center", width: "100%" }}>
           {item.BARCODE || item.barcode || item.code || "N/A"}
         </div>
       </div>
 
       {/* พื้นที่บาร์โค้ด */}
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          margin: "1px 0 3px 0",
-          flex: "0 0 auto",
-        }}
-      >
-        <canvas
-          ref={canvasRef}
-          style={{
-            maxWidth: "100%",
-            height: "auto",
-            display: "block",
-          }}
-        />
+      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", margin: "1px 0 3px 0", flex: "0 0 auto" }}>
+        <canvas ref={canvasRef} style={{ maxWidth: "100%", height: "auto", display: "block" }} />
       </div>
 
-      {/* ชื่อสินค้า */}
-      <div
-        style={{
-          textAlign: "center",
-          fontSize: "6pt",
-          width: "100%",
-          wordBreak: "break-all",
-          whiteSpace: "normal",
-          lineHeight: "1.2",
-          marginTop: "1px",
-        }}
-      >
-        {item.NAME || item.NAMETH || "ບໍ່ມີຂໍ້ມູນ"}
+      {/* ชื่อสินค้า editable */}
+      <div style={{ textAlign: "center", fontSize: "6pt", width: "100%", wordBreak: "break-all", whiteSpace: "normal", lineHeight: "1.2", marginTop: "1px" }}>
+        {editingName ? (
+          <input
+            type="text"
+            value={name}
+            onChange={handleNameChange}
+            onBlur={handleNameBlur}
+            onKeyDown={handleNameKeyDown}
+            autoFocus
+            style={{ fontSize: "6pt", textAlign: "center", width: "100%", boxSizing: "border-box" }}
+          />
+        ) : (
+          <span onClick={handleNameClick}>{name || "ບໍ່ມີຂໍ້ມູນ"}</span>
+        )}
       </div>
 
       {/* รหัสสินค้า (CODE) */}
-      <div
-        style={{
-          textAlign: "center",
-          fontSize: "6pt",
-        }}
-      >
+      <div style={{ textAlign: "center", fontSize: "6pt", margin: "1px" }}>
         {item.CODE ? `ລະຫັດສິນຄ້າ (${item.CODE})` : ""}
       </div>
 
       {/* ราคา */}
-      {item.PRICE &&
-        item.PRICE !== "ไม่มีราคา" &&
-        item.PRICE !== "N/A" &&
-        item.PRICE !== null && (
-          <div
-            style={{
-              marginTop: "-3px",
-              textAlign: "center",
-              fontSize: "7pt",
-              fontWeight: "bold",
-            }}
-          >
-            ລາຄາ {item.PRICE}
-          </div>
-        )}
+      {item.PRICE && item.PRICE !== "ไม่มีราคา" && item.PRICE !== "N/A" && item.PRICE !== null && (
+        <div style={{ marginTop: "-3px", textAlign: "center", fontSize: "7pt", fontWeight: "bold" }}>
+          ລາຄາ {item.PRICE}
+        </div>
+      )}
     </div>
   );
 };

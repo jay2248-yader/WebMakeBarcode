@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, forwardRef } from "react";
 
-const Input = ({
+const Input = forwardRef(({
   label,
   type = "text",
   placeholder,
@@ -8,16 +8,16 @@ const Input = ({
   onChange,
   maxLength,
   errorMessage = "",
-}) => {
+  autoFocus = false,
+  onKeyDown,
+}, ref) => {
   const [showPassword, setShowPassword] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
 
   const inputType = type === "password" && showPassword ? "text" : type;
   const isPasswordType = type === "password";
 
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
+  const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
   return (
     <div className="flex flex-col w-full">
@@ -33,6 +33,7 @@ const Input = ({
 
       <div className="relative">
         <input
+          ref={ref} // ✅ รับ ref
           type={inputType}
           placeholder={placeholder}
           value={value}
@@ -40,20 +41,21 @@ const Input = ({
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
           maxLength={maxLength}
+          autoFocus={autoFocus}
+          onKeyDown={onKeyDown} // ✅ event keyDown
           className={`
-            w-full px-4 py-3 pr-12
-            border-2 rounded-xl
-            bg-gray-50 
+            w-full px-4 py-3 ${isPasswordType ? "pr-12" : "pr-4"}
+            border-2 rounded-xl bg-gray-50
             transition-all duration-300 ease-in-out
             focus:outline-none focus:bg-white
             ${
-              isFocused
+              errorMessage
+                ? "border-red-500 ring-0 shadow-none"
+                : isFocused
                 ? "border-sky-500 ring-4 ring-sky-500/10 shadow-lg"
                 : "border-gray-300 hover:border-gray-400"
             }
-            ${isPasswordType ? "pr-12" : "pr-4"}
             placeholder:text-gray-400
-            ${errorMessage ? "border-red-500" : ""}
           `}
         />
 
@@ -99,11 +101,9 @@ const Input = ({
         )}
       </div>
 
-      {errorMessage && (
-        <p className="text-red-500 text-sm mt-1">{errorMessage}</p>
-      )}
+      {errorMessage && <p className="text-red-500 text-sm mt-1">{errorMessage}</p>}
     </div>
   );
-};
+});
 
 export default Input;

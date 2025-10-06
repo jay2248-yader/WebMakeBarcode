@@ -4,7 +4,6 @@ import { FaBarcode, FaWarehouse, FaFileInvoice, FaBalanceScale, FaTag } from "re
 import BarcodeDisplay from "./BarcodeDisplay";
 
 const ProductDetailFront = ({ productData = {}, DOCNO, UNITCODE, prices = [], barcodes = [], addToCart }) => {
-  const [showBarcodeModal, setShowBarcodeModal] = useState(false);
   const [selectedPrice, setSelectedPrice] = useState(prices[0] || null);
   const [selectedIndex, setSelectedIndex] = useState(0); // track ปุ่มที่เลือก
   const [quantity, setQuantity] = useState(1); // จำนวนที่จะเพิ่ม
@@ -164,7 +163,7 @@ const ProductDetailFront = ({ productData = {}, DOCNO, UNITCODE, prices = [], ba
           {barcodes && barcodes.length > 0 ? (
             <div className="flex flex-col space-y-2">
               {barcodes.map((bc, idx) => (
-                <div key={idx} className="flex justify-between items-center bg-gradient-to-r from-gray-50 to-gray-100 p-3 rounded-xl shadow hover:shadow-md transition">
+                <div key={idx} className="flex justify-between items-center bg-gradient-to-r from-gray-50 to-gray-100 p-6 rounded-xl shadow hover:shadow-md transition">
                   <span className="font-mono font-semibold">{bc.BARCODE}</span>
                   {addToCart && (
                     <button
@@ -179,15 +178,7 @@ const ProductDetailFront = ({ productData = {}, DOCNO, UNITCODE, prices = [], ba
                   )}
                 </div>
               ))}
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setShowBarcodeModal(true);
-                }}
-                className="mt-2 text-sm text-gray-500 underline"
-              >
-                View all barcodes
-              </button>
+
             </div>
           ) : (
             <p className="text-gray-500">ບໍ່ມີຂໍ້ມູນ Barcode</p>
@@ -195,20 +186,7 @@ const ProductDetailFront = ({ productData = {}, DOCNO, UNITCODE, prices = [], ba
         </div>
       </div>
 
-      {/* Barcode Modal */}
-      {showBarcodeModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-          <div className="bg-white rounded-2xl p-6 max-w-xl w-full relative shadow-lg mx-4">
-            <button
-              className="absolute top-4 right-4 text-gray-600 hover:text-gray-900 text-2xl"
-              onClick={() => setShowBarcodeModal(false)}
-            >
-              ✖
-            </button>
-            <BarcodeDisplay barcodes={barcodes} addToCart={handleAddToCart} />
-          </div>
-        </div>
-      )}
+     
     </div>
   );
 };

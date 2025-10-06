@@ -110,7 +110,9 @@ const ProductDetailBack = ({ barcodeData, addToCart }) => {
               min="1"
               max="999"
               value={quantity}
-              onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
+              onChange={(e) =>
+                setQuantity(Math.max(1, parseInt(e.target.value) || 1))
+              }
               className="w-16 text-center border border-gray-300 rounded-lg py-1 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
             />
             <button
@@ -134,34 +136,20 @@ const ProductDetailBack = ({ barcodeData, addToCart }) => {
               className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-5 shadow hover:shadow-lg transition flex justify-between items-center"
             >
               <div>
-                <p className="font-mono font-semibold text-base">
+                <p className="font-mono font-semibold text-lg text-gray-800">
                   {bc.BARCODE || "N/A"}
-                </p>
-                <Barcode
-                  value={bc.BARCODE || ""}
-                  format="CODE128"
-                  width={1.5}
-                  height={50}
-                  displayValue={false}
-                  background="#fff"
-                  lineColor="#000"
-                />
-                <p className="text-gray-700 text-sm mt-2">
-                  {bc.BARCODETEXT || "N/A"}
                 </p>
               </div>
               <button
                 onClick={() => {
-                  // เพิ่มตามจำนวนที่เลือก
                   for (let i = 0; i < quantity; i++) {
                     addToCart({
                       ...bc,
                       NAME: product?.NAMETH,
                       CODE: product?.CODE,
-                      PRICE: "ไม่มีราคา", // แสดงข้อความแทนราคา
+                      PRICE: "ไม่มีราคา",
                     });
                   }
-                  // รีเซ็ตจำนวนกลับเป็น 1
                   setQuantity(1);
                 }}
                 className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition h-min self-center"

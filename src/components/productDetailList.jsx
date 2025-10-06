@@ -21,7 +21,7 @@ const ProductDetailList = ({ productPrices = [], barcodeData = [] , addToCart}) 
       >
         <span className="text-2xl">🔄</span>
         <span className="text-lg font-semibold">
-          {isFlipped ? "Back: Barcodes" : "Front: Product Prices"}
+          {isFlipped ? "ສິນຄ້າມີລາຄາບໍ່ມີລາຄາ" : "ສິນຄ້າມີລາຄາ"}
         </span>
       </button>
     </div>

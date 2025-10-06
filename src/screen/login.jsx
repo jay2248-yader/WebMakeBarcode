@@ -1,12 +1,12 @@
-import React from "react";
+import React, { useRef } from "react";
 import Input from "../components/Input";
 import Button from "../components/Button";
 import CSCLogo from "../assets/CSCLogo.webp";
 import useLoginForm from "../hook/UseLogin";
 
 const Login = () => {
-  const { values, errors, isLoading, handleChange, handleSubmit } =
-    useLoginForm();
+  const { values, errors, isLoading, handleChange, handleSubmit } = useLoginForm();
+  const passwordRef = useRef(null);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-sky-400 p-4">
@@ -20,7 +20,7 @@ const Login = () => {
           ລະບົບສ້າງ Barcode
         </h1>
 
-        <div className="flex flex-col w-full space-y-4 ">
+        <div className="flex flex-col w-full space-y-4">
           {/* Username */}
           <Input
             label="ລະຫັດພະນັກງານ"
@@ -29,10 +29,17 @@ const Login = () => {
             onChange={(e) => handleChange("username", e.target.value)}
             maxLength={10}
             errorMessage={errors.username}
+            autoFocus={true}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                passwordRef.current?.focus();
+              }
+            }}
           />
 
           {/* Password */}
           <Input
+            ref={passwordRef}
             label="ລະຫັດຜ່ານ"
             type="password"
             placeholder="ໃສ່ລະຫັດຜ່ານ"
@@ -40,6 +47,11 @@ const Login = () => {
             onChange={(e) => handleChange("password", e.target.value)}
             maxLength={10}
             errorMessage={errors.password}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                handleSubmit(); // ✅ Enter → login
+              }
+            }}
           />
 
           {/* Login Button */}
