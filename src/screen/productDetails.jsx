@@ -41,8 +41,7 @@ const ProductDetails = () => {
           setBarcodeData([]);
         }
 
-        console.log("เรียก API ProductBarcode จาก:", import.meta.env.VITE_API_PRODUCTBARCODES);
-        console.log("ข้อมูลจาก API Barcode:", barcodeRes);
+
 
       } catch (err) {
         console.error("Error fetching product price:", err);

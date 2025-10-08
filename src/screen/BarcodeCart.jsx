@@ -80,7 +80,7 @@ const BarcodeCart = () => {
 
   const handlePrint = async () => {
     if (barcodes.length === 0) {
-      alert("ไม่มีบาร์โค้ดในตะกร้า");
+      alert("ບໍ່ມີບາລ໌ໂຄດໃນກະຕ່າ");
       return;
     }
 
@@ -115,7 +115,7 @@ const BarcodeCart = () => {
 
     } catch (error) {
       console.error('Print error:', error);
-      alert('เกิดข้อผิดพลาดในการพิมพ์: ' + error.message);
+      alert('ເກີດຂໍ້ຜິດພາດໃນການພິມ: ' + error.message);
     } finally {
       // ทำความสะอาด
       if (iframe) {

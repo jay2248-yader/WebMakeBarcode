@@ -134,7 +134,7 @@ const BarcodePreview = ({
                   background: "#f9f9f9",
                 }}
               >
-                ว่าง
+                ວ່າງ
               </div>
             );
           })}

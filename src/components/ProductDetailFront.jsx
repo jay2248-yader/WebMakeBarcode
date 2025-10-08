@@ -31,7 +31,7 @@ const ProductDetailFront = ({ productData = {}, DOCNO, UNITCODE, prices = [], ba
 
   const handleAddToCart = (barcode) => {
     if (!selectedPrice) {
-      alert("กรุณาเลือกราคาก่อน");
+      alert("ກະລຸນາເລືອກລາຄາກ່ອນ");
       return;
     }
     

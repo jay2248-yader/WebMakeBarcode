@@ -147,13 +147,13 @@ const ProductDetailBack = ({ barcodeData, addToCart }) => {
                       ...bc,
                       NAME: product?.NAMETH,
                       CODE: product?.CODE,
-                      PRICE: "ไม่มีราคา",
+                      PRICE: "ບໍ່ມີລາຄາ",
                     });
                   }
                   setQuantity(1);
                 }}
                 className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition h-min self-center"
-                title="เพิ่มโดยไม่มีราคา - สามารถแก้ไขราคาภายหลัง"
+                title="ເພີ່ມໂດຍບໍ່ມີລາຄາ - ສາມາດແກ້ໄຂລາຄາພາຍໃນ"
               >
                 ➕ Add {quantity} (No Price)
               </button>

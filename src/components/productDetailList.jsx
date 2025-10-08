@@ -58,7 +58,6 @@ useEffect(() => {
   // กรณีการ์ดเดียว จัดตรงกลาง
   if (cardsToRender.length === 1) {
     const item = cardsToRender[0];
-    console.log(`Rendering single card: ${isFlipped ? "Back (Barcode)" : "Front (Price)"}`);
     return (
       <div className="mt-6">
         <FlipButton />
