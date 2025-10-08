@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import useBarcodeCartStore from "../store/barcodeCartStore";
+import ConfirmModal from "./ConfirmModal";
 
 const PrintSettingsPanel = ({
   presets,
@@ -35,6 +36,7 @@ const PrintSettingsPanel = ({
   handlePrint,
 }) => {
   const { clearCart } = useBarcodeCartStore();
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   // ฟังก์ชันช่วย parse number และรองรับค่า 0
   const parseOrDefault = (val, defaultVal) => {
@@ -135,7 +137,9 @@ const PrintSettingsPanel = ({
                 type="number"
                 min={0}
                 value={labelWidth}
-                onChange={(e) => setLabelWidth(parseOrDefault(e.target.value, 0))}
+                onChange={(e) =>
+                  setLabelWidth(parseOrDefault(e.target.value, 0))
+                }
                 className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
               />
             </div>
@@ -147,7 +151,9 @@ const PrintSettingsPanel = ({
                 type="number"
                 min={0}
                 value={labelHeight}
-                onChange={(e) => setLabelHeight(parseOrDefault(e.target.value, 0))}
+                onChange={(e) =>
+                  setLabelHeight(parseOrDefault(e.target.value, 0))
+                }
                 className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
               />
             </div>
@@ -183,7 +189,9 @@ const PrintSettingsPanel = ({
                 type="number"
                 min={0}
                 value={marginRight}
-                onChange={(e) => setMarginRight(parseOrDefault(e.target.value, 0))}
+                onChange={(e) =>
+                  setMarginRight(parseOrDefault(e.target.value, 0))
+                }
                 className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
               />
             </div>
@@ -195,7 +203,9 @@ const PrintSettingsPanel = ({
                 type="number"
                 min={0}
                 value={marginBottom}
-                onChange={(e) => setMarginBottom(parseOrDefault(e.target.value, 0))}
+                onChange={(e) =>
+                  setMarginBottom(parseOrDefault(e.target.value, 0))
+                }
                 className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
               />
             </div>
@@ -247,7 +257,9 @@ const PrintSettingsPanel = ({
                   max={4}
                   step={0.1}
                   value={barcodeWidth}
-                  onChange={(e) => setBarcodeWidth(parseOrDefault(e.target.value, 0))}
+                  onChange={(e) =>
+                    setBarcodeWidth(parseOrDefault(e.target.value, 0))
+                  }
                   className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
                 />
               </div>
@@ -261,7 +273,9 @@ const PrintSettingsPanel = ({
                 type="number"
                 min={0}
                 value={barcodeHeight}
-                onChange={(e) => setBarcodeHeight(parseOrDefault(e.target.value, 0))}
+                onChange={(e) =>
+                  setBarcodeHeight(parseOrDefault(e.target.value, 0))
+                }
                 className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
               />
             </div>
@@ -300,20 +314,21 @@ const PrintSettingsPanel = ({
           </div>
 
           <button
-            onClick={() => {
-              if (confirm("ຕ້ອງການລົບ Barcode ທັງໝົດຫຼືບໍ່?")) {
-                clearCart();
-              }
-            }}
-            disabled={barcodes.length === 0}
-            className={`w-full py-3 px-4 rounded-xl font-medium transition-all duration-200 no-print ${
-              barcodes.length === 0
-                ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                : "bg-gradient-to-r from-red-500 to-red-600 text-white shadow-lg hover:shadow-xl hover:scale-105"
-            }`}
+            onClick={() => setShowConfirmModal(true)}
+            disabled={barcodes.length === 0 || isGenerating} // ✅ ปิดปุ่มเมื่อกำลังพิมพ์หรือไม่มีบาร์โค้ด
+            className={`
+    w-full py-3 px-4 rounded-xl font-medium transition-all duration-500 ease-in-out
+    no-print transform
+    ${
+      barcodes.length === 0 || isGenerating
+        ? "bg-gray-300 text-gray-500 cursor-not-allowed scale-95 opacity-80"
+        : "bg-gradient-to-r from-red-500 to-red-600 text-white shadow-lg hover:shadow-xl hover:scale-105 hover:from-red-600 hover:to-red-700"
+    }
+  `}
           >
             🗑️ ລົບທັງໝົດ
           </button>
+          
         </div>
 
         {isGenerating && (
@@ -322,6 +337,17 @@ const PrintSettingsPanel = ({
           </div>
         )}
       </div>
+
+      {showConfirmModal && (
+        <ConfirmModal
+          title="ຕ້ອງການລົບ Barcode ທັງໝົດຫຼືບໍ່?"
+          onConfirm={() => {
+            clearCart();
+            setShowConfirmModal(false);
+          }}
+          onCancel={() => setShowConfirmModal(false)}
+        />
+      )}
     </>
   );
 };

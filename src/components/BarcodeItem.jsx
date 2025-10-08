@@ -30,7 +30,7 @@ const BarcodeItem = ({
             width: barcodeWidth,
             height: barcodeHeight,
             displayValue: false,
-            margin: 8, // เพิ่ม quiet zone เป็น 8 สำหรับ thermal printer
+            margin: 4, // เพิ่ม quiet zone เป็น 5 สำหรับ thermal printer
             background: "#ffffff",
             lineColor: lineColor,
        
@@ -109,9 +109,9 @@ const BarcodeItem = ({
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          margin: "2px 0 3px 0",
+          margin: "0px 0 0px 0",
           flex: "0 0 auto",
-          padding: "0 3mm", // เพิ่ม padding สำหรับ thermal printer
+          padding: "0 0mm", // เพิ่ม padding สำหรับ thermal printer
         }}
       >
         <canvas
