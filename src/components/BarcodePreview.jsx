@@ -16,6 +16,7 @@ const BarcodePreview = ({
   barcodeHeight,
   paperWidth,
   paperHeight,
+  showQR = true,
 }) => {
   const { decreaseBarcode } = useBarcodeCartStore();
 
@@ -87,6 +88,7 @@ const BarcodePreview = ({
                     labelHeight={labelHeight}
                     marginRight={marginRight}
                     marginBottom={marginBottom}
+                    showQR={showQR}
                   />
                   {/* ปุ่มลบ */}
                   <button

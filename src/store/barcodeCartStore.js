@@ -9,21 +9,18 @@ export const useBarcodeCartStore = create(
 
         // ➕ เพิ่มบาร์โค้ด
         addBarcode: (barcode) => {
-          const existing = get().barcodes.find(
+          const current = get().barcodes;
+          const index = current.findIndex(
             (item) => item.BARCODE === barcode.BARCODE && item.PRICE === barcode.PRICE
           );
-          if (existing) {
-            set({
-              barcodes: get().barcodes.map((item) =>
-                item.BARCODE === barcode.BARCODE && item.PRICE === barcode.PRICE
-                  ? { ...item, quantity: item.quantity + 1 }
-                  : item
-              ),
-            });
+          if (index !== -1) {
+            // เพิ่มจำนวนและย้าย item ไปท้ายสุด เพื่อให้เรียงตามการเพิ่มล่าสุด
+            const existing = current[index];
+            const updated = { ...existing, quantity: existing.quantity + 1 };
+            const without = current.filter((_, i) => i !== index);
+            set({ barcodes: [...without, updated] });
           } else {
-            set({
-              barcodes: [...get().barcodes, { ...barcode, quantity: 1 }],
-            });
+            set({ barcodes: [...current, { ...barcode, quantity: 1 }] });
           }
         },
 

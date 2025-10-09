@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
 import Input from "../components/Input";
 import Button from "../components/Button";
-import CSCLogo from "../assets/CSCLogo.webp";
+import CSCLogo from "../assets/image.png";
 import useLoginForm from "../hook/UseLogin";
 
 const Login = () => {

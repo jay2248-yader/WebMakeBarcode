@@ -152,7 +152,7 @@ const ProductDetailBack = ({ barcodeData, addToCart }) => {
                   }
                   setQuantity(1);
                 }}
-                className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition h-min self-center"
+                className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition h-min self-center"
                 title="ເພີ່ມໂດຍບໍ່ມີລາຄາ - ສາມາດແກ້ໄຂລາຄາພາຍໃນ"
               >
                 ➕ Add {quantity} (No Price)

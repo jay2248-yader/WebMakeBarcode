@@ -14,7 +14,8 @@ const PrintBarcodeGrid = ({
   marginRight,
   marginBottom,
   paperWidth,
-  paperHeight
+  paperHeight,
+  showQR = true
 }) => {
   // แปลง barcodes ให้แสดงแต่ละ quantity เป็น item แยก (เหมือน BarcodePreview)
   const expandedBarcodes = [];
@@ -67,6 +68,7 @@ const PrintBarcodeGrid = ({
               barcodeHeight={barcodeHeight}
               labelWidth={labelWidth}
               labelHeight={labelHeight}
+              showQR={showQR}
             />
           ))}
         </div>

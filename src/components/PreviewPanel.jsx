@@ -15,7 +15,8 @@ const PreviewPanel = ({
   barcodeHeight,
   paperWidth,
   paperHeight,
-  zoom
+  zoom,
+  showQR = true
 }) => {
   return (
     <div className="flex-1 bg-gradient-to-br from-gray-50 to-gray-100 p-8 overflow-auto">
@@ -41,6 +42,7 @@ const PreviewPanel = ({
           barcodeHeight={barcodeHeight}
           paperWidth={paperWidth}
           paperHeight={paperHeight}
+          showQR={showQR}
         />
         </div>
       </div>

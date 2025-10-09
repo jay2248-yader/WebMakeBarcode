@@ -34,6 +34,8 @@ const PrintSettingsPanel = ({
   barcodes,
   isGenerating,
   handlePrint,
+  showQR,
+  setShowQR,
 }) => {
   const { clearCart } = useBarcodeCartStore();
   const [showConfirmModal, setShowConfirmModal] = useState(false);
@@ -221,6 +223,18 @@ const PrintSettingsPanel = ({
             <span>Barcode Settings</span>
           </h2>
           <div className="space-y-4">
+            <div className="flex items-center gap-3">
+              <input
+                id="toggle-show-qr"
+                type="checkbox"
+                checked={!!showQR}
+                onChange={(e) => setShowQR(e.target.checked)}
+                className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+              />
+              <label htmlFor="toggle-show-qr" className="text-sm font-medium text-gray-700">
+                Show QR on label
+              </label>
+            </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Barcode Type
@@ -280,6 +294,9 @@ const PrintSettingsPanel = ({
               />
             </div>
 
+            
+            
+
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Preview Zoom: {zoom}x
@@ -296,6 +313,10 @@ const PrintSettingsPanel = ({
             </div>
           </div>
         </div>
+
+
+
+        
 
         {/* Action Buttons */}
         <div className="space-y-3 mt-6">
@@ -328,7 +349,6 @@ const PrintSettingsPanel = ({
           >
             🗑️ ລົບທັງໝົດ
           </button>
-          
         </div>
 
         {isGenerating && (

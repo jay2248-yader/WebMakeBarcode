@@ -1,65 +1,68 @@
 import React, { useState, useEffect, useRef } from "react";
 import JsBarcode from "jsbarcode";
-import CSCLogo from "../assets/CSCLogo.webp";
+import { QRCodeSVG } from "qrcode.react";
+import CSCLogo from "../assets/image.png";
 import useBarcodeCartStore from "../store/barcodeCartStore";
 
 const BarcodeItem = ({
   item,
-  barcodeType = "CODE128", // default format
+  barcodeType = "CODE128",
   lineColor = "#000000",
-  barcodeWidth = 4, // เพิ่มเป็น 4 สำหรับ TSC TTP-240 Pro
-  barcodeHeight = 60, // เพิ่มเป็น 60 สำหรับความคมชัด
+  barcodeWidth = 6, // สำหรับ TSC TTP-244 Pro
+  barcodeHeight = 60,
   labelWidth = 50, // mm
   labelHeight = 30, // mm
+  showQR = true,
 }) => {
-  const canvasRef = useRef(null);
+  const svgRef = useRef(null);
   const [editingName, setEditingName] = useState(false);
   const [name, setName] = useState(item.NAME || item.NAMETH || "");
   const updateBarcodeName = useBarcodeCartStore(
     (state) => state.updateBarcodeName
   );
 
+  // 🧾 สร้างบาร์โค้ด (SVG เพื่อความคมชัดตอนพิมพ์)
   useEffect(() => {
-    if (canvasRef.current) {
-      try {
-        JsBarcode(
-          canvasRef.current,
-          item.BARCODE || item.barcode || item.code || "000000000000",
-          {
-            format: barcodeType,
-            width: barcodeWidth,
-            height: barcodeHeight,
-            displayValue: false,
-            margin: 4, // เพิ่ม quiet zone เป็น 5 สำหรับ thermal printer
-            background: "#ffffff",
-            lineColor: lineColor,
-       
-            valid: function (valid) {
-              if (!valid) console.warn("Invalid barcode");
-            },
-          }
-        );
-      } catch (error) {
-        console.error("Barcode generation error:", error);
-      }
+    if (!svgRef.current) return;
+    try {
+      JsBarcode(
+        svgRef.current,
+        item.BARCODE || item.barcode || item.code || "000000000000",
+        {
+          format: barcodeType,
+          width: barcodeWidth,
+          height: barcodeHeight,
+          displayValue: false,
+          margin: 4,
+          background: "#ffffff",
+          lineColor: lineColor,
+          valid: (valid) => {
+            if (!valid) console.warn("Invalid barcode");
+          },
+        }
+      );
+    } catch (error) {
+      console.error("Barcode generation error:", error);
     }
   }, [item, barcodeType, lineColor, barcodeWidth, barcodeHeight]);
 
+  // ✏️ แก้ไขชื่อสินค้า
   const handleNameClick = () => setEditingName(true);
-
   const handleNameChange = (e) => setName(e.target.value);
-
   const handleNameBlur = () => {
     setEditingName(false);
     updateBarcodeName(item, name);
   };
-
   const handleNameKeyDown = (e) => {
     if (e.key === "Enter") {
       setEditingName(false);
       updateBarcodeName(item, name);
     }
   };
+
+  // จำกัดชื่อสินค้าให้แสดงแค่ 10 ตัวอักษร
+  const displayName =
+    name.length > 55 ? name.substring(0, 55).trim() + "…" : name;
 
   return (
     <div
@@ -68,26 +71,33 @@ const BarcodeItem = ({
         height: `${labelHeight}mm`,
         display: "flex",
         flexDirection: "column",
-        border: "1px solid #000",
+        border: "0px solid #000",
         padding: "0.7mm",
         boxSizing: "border-box",
         background: "#fff",
         fontFamily: "'Noto Sans Lao', 'sans-serif'",
         fontSize: "12pt",
+        position: "relative",
       }}
     >
-      {/* โลโก้ซ้ายสุด + รหัสสินค้ากลาง */}
+      {/* โลโก้ + รหัสบาร์โค้ด */}
       <div
-        style={{ display: "flex", alignItems: "center", position: "relative" }}
+        style={{
+          display: "flex",
+          alignItems: "center",
+          position: "relative",
+          marginTop: "-3px",
+        }}
       >
         <img
           src={CSCLogo}
           alt="CSC Logo"
           style={{
-            width: "18px",
-            height: "18px",
+            width: "16px",
+            height: "16px",
             objectFit: "contain",
             position: "absolute",
+            marginTop: "1px",
             left: 0,
           }}
         />
@@ -109,23 +119,23 @@ const BarcodeItem = ({
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          margin: "0px 0 0px 0",
+          margin: "-1px 0 -1px 0",
           flex: "0 0 auto",
-          padding: "0 0mm", // เพิ่ม padding สำหรับ thermal printer
+          padding: "0 0mm",
         }}
       >
-        <canvas
-          ref={canvasRef}
+        <svg
+          ref={svgRef}
           style={{
-            maxWidth: "100%",
+            width: "100%",
             height: "auto",
             display: "block",
-            imageRendering: "crisp-edges", // ให้ขอบคมชัด สแกนง่าย
+            shapeRendering: "crispEdges",
           }}
         />
       </div>
 
-      {/* ชื่อสินค้า editable */}
+      {/* ชื่อสินค้า */}
       <div
         style={{
           textAlign: "center",
@@ -153,12 +163,19 @@ const BarcodeItem = ({
             }}
           />
         ) : (
-          <span onClick={handleNameClick}>{name || "ບໍ່ມີຂໍ້ມູນ"}</span>
+          <span onClick={handleNameClick}>{displayName || "ບໍ່ມີຂໍ້ມູນ"}</span>
         )}
       </div>
 
-      {/* รหัสสินค้า (CODE) */}
-      <div style={{ textAlign: "center", fontSize: "6pt", margin: "1px" }}>
+      {/* รหัสสินค้า */}
+      <div
+        style={{
+          textAlign: "center",
+          fontSize: "5.5pt",
+          margin: "1px",
+          marginRight: showQR ? "25px" : "0px",
+        }}
+      >
         {item.CODE ? `ລະຫັດສິນຄ້າ (${item.CODE})` : ""}
       </div>
 
@@ -171,13 +188,43 @@ const BarcodeItem = ({
             style={{
               marginTop: "-3px",
               textAlign: "center",
-              fontSize: "7pt",
+              fontSize: "6pt",
               fontWeight: "bold",
+              marginRight: showQR ? "25px" : "0px",
             }}
           >
             ລາຄາ {item.PRICE}
           </div>
         )}
+
+      {/* ✅ QR Code มุมขวาล่าง */}
+      {showQR && (
+        <div
+          style={{
+            position: "absolute",
+            bottom: "1mm",
+            right: "1mm",
+            display: "flex",
+            justifyContent: "flex-end",
+            alignItems: "center",
+            width: "30px",
+            height: "20px",
+          }}
+        >
+          <QRCodeSVG
+            value={item.BARCODE || item.barcode || item.code || "000000000000"}
+            size={128}
+            level="Q"
+            includeMargin={false}
+            style={{
+              width: "23px", // ขนาดแสดงจริง
+              height: "23px",
+              marginRight: "3px",
+              shapeRendering: "crispEdges",
+            }}
+          />
+        </div>
+      )}
     </div>
   );
 };

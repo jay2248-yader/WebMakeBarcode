@@ -17,7 +17,7 @@ const presets = [
     paperWidth: 100,
     paperHeight: 25,
     labelWidth: 32,
-    labelHeight: 25,
+    labelHeight: 24,
     columns: 3,
     rows: 1,
     marginRight: 2,
@@ -54,7 +54,7 @@ const BarcodeCart = () => {
   const [paperWidth, setPaperWidth] = useState(100);
   const [paperHeight, setPaperHeight] = useState(25);
   const [labelWidth, setLabelWidth] = useState(32);
-  const [labelHeight, setLabelHeight] = useState(25);
+  const [labelHeight, setLabelHeight] = useState(24);
   const [columns, setColumns] = useState(3);
   const [rows, setRows] = useState(1);
   const [marginRight, setMarginRight] = useState(2);
@@ -63,9 +63,10 @@ const BarcodeCart = () => {
   const [barcodeType, setBarcodeType] = useState("CODE128");
   const [lineColor, setLineColor] = useState("#000000");
   const [barcodeWidth, setBarcodeWidth] = useState(1);
-  const [barcodeHeight, setBarcodeHeight] = useState(28);
+  const [barcodeHeight, setBarcodeHeight] = useState(26);
 
   const [zoom, setZoom] = useState(1);
+  const [showQR, setShowQR] = useState(true);
 
   const applyPreset = (p) => {
     setPaperWidth(p.paperWidth);
@@ -107,7 +108,8 @@ const BarcodeCart = () => {
         marginRight,
         marginBottom,
         paperWidth,
-        paperHeight
+        paperHeight,
+        showQR
       }, iframe);
 
       // พิมพ์
@@ -168,6 +170,8 @@ const BarcodeCart = () => {
         isGenerating={isGenerating}
         handlePrint={handlePrint}
         handleExportPDF={handleExportPDF}
+        showQR={showQR}
+        setShowQR={setShowQR}
       />
 
       <PreviewPanel
@@ -185,6 +189,7 @@ const BarcodeCart = () => {
         paperWidth={paperWidth}
         paperHeight={paperHeight}
         zoom={zoom}
+        showQR={showQR}
       />
 
       </div>
