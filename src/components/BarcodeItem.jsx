@@ -12,7 +12,7 @@ const BarcodeItem = ({
   barcodeHeight = 60,
   labelWidth = 50, // mm
   labelHeight = 30, // mm
-  showQR = true,
+  showQR = false,
 }) => {
   const svgRef = useRef(null);
   const [editingName, setEditingName] = useState(false);
@@ -34,7 +34,7 @@ const BarcodeItem = ({
           height: barcodeHeight,
           displayValue: false,
           margin: 4,
-          background: "#ffffff",
+          background: "transparent",
           lineColor: lineColor,
           valid: (valid) => {
             if (!valid) console.warn("Invalid barcode");
@@ -62,7 +62,7 @@ const BarcodeItem = ({
 
   // จำกัดชื่อสินค้าให้แสดงแค่ 10 ตัวอักษร
   const displayName =
-    name.length > 55 ? name.substring(0, 55).trim() + "…" : name;
+    name.length > 60 ? name.substring(0, 60).trim() + "…" : name;
 
   return (
     <div
@@ -87,6 +87,7 @@ const BarcodeItem = ({
           alignItems: "center",
           position: "relative",
           marginTop: "-3px",
+ 
         }}
       >
         <img
@@ -107,6 +108,7 @@ const BarcodeItem = ({
             letterSpacing: "0.5px",
             textAlign: "center",
             width: "100%",
+
           }}
         >
           {item.BARCODE || item.barcode || item.code || "N/A"}
@@ -119,9 +121,10 @@ const BarcodeItem = ({
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          margin: "-1px 0 -1px 0",
+          margin: "-2px 0 0px 0",
           flex: "0 0 auto",
           padding: "0 0mm",
+
         }}
       >
         <svg
@@ -144,7 +147,7 @@ const BarcodeItem = ({
           wordBreak: "break-all",
           whiteSpace: "normal",
           lineHeight: "1.2",
-          marginTop: "1px",
+
         }}
       >
         {editingName ? (
@@ -208,7 +211,7 @@ const BarcodeItem = ({
             justifyContent: "flex-end",
             alignItems: "center",
             width: "30px",
-            height: "20px",
+            height: "19px",
           }}
         >
           <QRCodeSVG
@@ -219,7 +222,7 @@ const BarcodeItem = ({
             style={{
               width: "23px", // ขนาดแสดงจริง
               height: "23px",
-              marginRight: "3px",
+              marginRight: "2px",
               shapeRendering: "crispEdges",
             }}
           />

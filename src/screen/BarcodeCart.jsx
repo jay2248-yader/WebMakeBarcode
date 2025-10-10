@@ -66,7 +66,7 @@ const BarcodeCart = () => {
   const [barcodeHeight, setBarcodeHeight] = useState(26);
 
   const [zoom, setZoom] = useState(1);
-  const [showQR, setShowQR] = useState(true);
+  const [showQR, setShowQR] = useState(false);
 
   const applyPreset = (p) => {
     setPaperWidth(p.paperWidth);

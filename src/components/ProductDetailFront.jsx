@@ -6,7 +6,6 @@ import {
   FaBalanceScale,
   FaTag,
 } from "react-icons/fa";
-import BarcodeDisplay from "./BarcodeDisplay";
 
 const ProductDetailFront = ({
   productData = {},
@@ -22,7 +21,7 @@ const ProductDetailFront = ({
   const [currencySuffix, setCurrencySuffix] = useState("KIP");
 
   const SectionTitle = ({ icon, title }) => (
-    <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center space-x-3">
+    <h3 className="text-xl font-bold text-gray-800 mb-2 flex items-center space-x-2">
       <span className="p-2 rounded-full bg-gradient-to-br from-indigo-100 to-indigo-200 text-indigo-600 shadow-inner">
         {icon}
       </span>
@@ -66,96 +65,98 @@ const ProductDetailFront = ({
   };
 
   return (
-    <div className="backdrop-blur-lg bg-white/100 shadow-xl rounded-3xl p-8 w-full max-w-4xl mx-auto border border-gray-100">
+    <div className="backdrop-blur-lg bg-white/100 shadow-xl rounded-3xl p-6 w-full max-w-4xl mx-auto border border-gray-100">
       {/* Header */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 pb-6 border-b border-gradient-to-r from-transparent via-gray-200 to-transparent">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 pb-6 border-b border-gradient-to-r from-transparent via-gray-200 to-transparent">
         <div>
           <h2 className="text-3xl font-extrabold text-gray-900">
             {productData.NAMETH || "ບໍ່ມີຂໍ້ມູນ"}
           </h2>
-          <p className="text-2xl text-black mt-1 border border-gray-300 rounded-lg px-3 py-1 inline-block bg-sky-400 shadow-sm">
+          <p className="text-2xl text-white mt-1 border border-gray-300 rounded-lg px-3 py-1 inline-block bg-blue-500 shadow-sm">
             {productData.CODE || "ບໍ່ມີຂໍ້ມູນ"}
           </p>
         </div>
       </div>
 
-      {/* ✅ Only Barcodes Section */}
-{/* Barcodes Section */}
-<div className="bg-gradient-to-r from-gray-50 to-gray-100 p-6 rounded-2xl shadow-inner">
-  <SectionTitle icon={<FaBarcode />} title="Barcodes" />
-  {barcodes && barcodes.length > 0 ? (
-    <div className="space-y-4">
-      {barcodes.map((bc, idx) => (
-        <div
-          key={idx}
-          className="bg-white p-5 rounded-2xl shadow-sm hover:shadow-lg transition border border-gray-200"
-        >
-          {/* Barcode Text */}
-          <p className="font-mono text-lg font-semibold text-gray-800 text-center mb-3">
-            {bc.BARCODE}
-          </p>
-
-          {/* Divider */}
-          <hr className="border-t border-gray-200 my-2" />
-
-          {/* Quantity Input + Add Button on same row */}
-          <div className="flex justify-center items-center gap-2 mt-3 flex-wrap">
-            <label className="text-sm font-medium text-gray-700">
-              ຈຳນວນ:
-            </label>
-            <div className="flex items-center space-x-2">
-              <button
-                onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                className="w-8 h-8 bg-gray-200 hover:bg-gray-300 rounded-full flex items-center justify-center transition"
+      {/* Barcodes Section */}
+      <div className="bg-gradient-to-r from-gray-50 to-gray-100 p-4 rounded-2xl shadow-inner">
+        {barcodes && barcodes.length > 0 ? (
+          <div className="space-y-4">
+            {barcodes.map((bc, idx) => (
+              <div
+                key={idx}
+                className="bg-white p-2 rounded-2xl shadow-sm hover:shadow-lg transition border border-gray-200"
               >
-                −
-              </button>
-              <input
-                type="number"
-                min="1"
-                max="999"
-                value={quantity}
-                onChange={(e) =>
-                  setQuantity(Math.max(1, parseInt(e.target.value) || 1))
-                }
-                className="w-16 text-center border border-gray-300 rounded-lg py-1 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-              />
-              <button
-                onClick={() => setQuantity(quantity + 1)}
-                className="w-8 h-8 bg-gray-200 hover:bg-gray-300 rounded-full flex items-center justify-center transition"
-              >
-                +
-              </button>
-            </div>
+                {/* Section Title with Barcode Text on the same line */}
+                <div className="flex items-center mb-2 justify-center">
+                  <div className="flex items-center space-x-2">
+                    <span className="p-2 rounded-full bg-gradient-to-br from-indigo-100 to-indigo-200 text-indigo-600 shadow-inner">
+                      <FaBarcode />
+                    </span>
+                    <span className="text-xl font-bold text-gray-800">Barcodes : </span>
+                  </div>
+                  <p className="font-mono text-lg font-semibold text-gray-800 ml-2 mt-1">
+                    {bc.BARCODE}
+                  </p>
+                </div>
 
-            {/* Add Button beside quantity */}
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                handleAddToCart(bc);
-              }}
-              className="ml-3 px-5 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-medium shadow-sm"
-            >
-              ➕ Add {quantity}
-            </button>
+                {/* Divider */}
+                <hr className="border-t border-gray-200 my-2" />
+
+                {/* Quantity Input + Add Button on same row */}
+                <div className="flex justify-center items-center gap-2 mt-2 flex-wrap">
+                  <label className="text-sm font-medium text-gray-700">
+                    ຈຳນວນ:
+                  </label>
+                  <div className="flex items-center space-x-1">
+                    <button
+                      onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                      className="w-8 h-8 bg-gray-200 hover:bg-gray-300 rounded-full flex items-center justify-center transition"
+                    >
+                      −
+                    </button>
+                    <input
+                      type="number"
+                      min="1"
+                      max="999"
+                      value={quantity}
+                      onChange={(e) =>
+                        setQuantity(Math.max(1, parseInt(e.target.value) || 1))
+                      }
+                      className="w-12 text-center border border-gray-300 rounded-lg py-1 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                    />
+                    <button
+                      onClick={() => setQuantity(quantity + 1)}
+                      className="w-8 h-8 bg-gray-200 hover:bg-gray-300 rounded-full flex items-center justify-center transition"
+                    >
+                      +
+                    </button>
+                  </div>
+
+                  {/* Add Button beside quantity */}
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleAddToCart(bc);
+                    }}
+                    className="ml-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-medium shadow-sm"
+                  >
+                    ➕ Add {quantity}
+                  </button>
+                </div>
+              </div>
+            ))}
           </div>
-        </div>
-      ))}
-    </div>
-  ) : (
-    <p className="text-gray-500">ບໍ່ມີຂໍ້ມູນ Barcode</p>
-  )}
-</div>
-
+        ) : (
+          <p className="text-gray-500">ບໍ່ມີຂໍ້ມູນ Barcode</p>
+        )}
+      </div>
 
       {/* Pricing */}
-      <div className="mt-5 pt-6 border-t border-gray-200">
+      <div className="mt-6 pt-4 border-t border-gray-200">
         <SectionTitle icon={<FaTag />} title="Pricing" />
         {/* Currency Selection */}
         <div className="mb-4">
-          <label className="text-xs font-medium text-gray-700 mb-1 block">
-            ເລືອກສະກຸນເງິນ:
-          </label>
           <div className="inline-flex gap-1 bg-gray-100 rounded-md p-1">
             {["KIP", "BAHT"].map((curr) => (
               <label
@@ -187,7 +188,7 @@ const ProductDetailFront = ({
           {prices.map((price, index) => (
             <label
               key={index}
-              className={`cursor-pointer bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-5 text-center shadow hover:shadow-lg transition ${
+              className={`cursor-pointer bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-3 text-center shadow hover:shadow-lg transition ${
                 selectedIndex === index ? "ring-2 ring-green-500" : ""
               }`}
             >
@@ -216,7 +217,7 @@ const ProductDetailFront = ({
       </div>
 
       {/* Product Groups */}
-      <div className="mt-10 pt-6 border-t border-gray-200">
+      <div className="mt-6 pt-6 border-t border-gray-200">
         <SectionTitle icon={<FaTag />} title="Product Groups" />
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div>
@@ -241,7 +242,7 @@ const ProductDetailFront = ({
       </div>
 
       {/* Document No & Unit */}
-      <div className="mt-10 pt-6 border-t border-gray-200">
+      <div className="mt-6 pt-6 border-t border-gray-200">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-8 gap-x-12">
           {renderInfoItem(
             <FaFileInvoice className="text-lg text-blue-600" />,
@@ -257,7 +258,7 @@ const ProductDetailFront = ({
       </div>
 
       {/* Location */}
-      <div className="mt-10 pt-6 border-t border-gray-200">
+      <div className="mt-6 pt-6 border-t border-gray-200">
         <SectionTitle icon={<FaWarehouse />} title="Location" />
         {renderInfoItem(
           <FaWarehouse className="text-lg text-orange-600" />,
