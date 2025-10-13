@@ -65,7 +65,7 @@ const BarcodeCart = () => {
   const [barcodeWidth, setBarcodeWidth] = useState(1);
   const [barcodeHeight, setBarcodeHeight] = useState(26);
 
-  const [zoom, setZoom] = useState(1);
+  const [zoom, setZoom] = useState(1.3);
   const [showQR, setShowQR] = useState(false);
 
   const applyPreset = (p) => {

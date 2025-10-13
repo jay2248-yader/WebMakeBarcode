@@ -1,5 +1,6 @@
 import React from "react";
 import BarcodePreview from "./BarcodePreview";
+import AlertIcon from "../assets/alert-svgrepo.svg"; // ใช้ไอคอนแดง
 
 const PreviewPanel = ({
   barcodes,
@@ -18,6 +19,20 @@ const PreviewPanel = ({
   zoom,
   showQR = false
 }) => {
+  if (!barcodes || barcodes.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center h-full p-8">
+        <div className="w-full max-w-md bg-white/90 border border-red-400 shadow-xl rounded-2xl p-6 text-center">
+          <div className="mx-auto mb-4 w-16 h-16 flex items-center justify-center">
+            <img src={AlertIcon} alt="Alert" className="w-12 h-12" />
+          </div>
+          <h3 className="text-xl font-bold text-black">ບໍ່ພົບ Barcode</h3>
+          <p className="mt-2 text-gray-700">ກະລຸນາໄປເພີ່ມ Barcode ກ່ອນ.</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex-1 bg-gradient-to-br from-gray-50 to-gray-100 p-8 overflow-auto">
       <div className="max-w-full">
@@ -28,22 +43,22 @@ const PreviewPanel = ({
             transformOrigin: 'top left',
           }}
         >
-        <BarcodePreview
-          currentBarcodes={barcodes}
-          labelWidth={labelWidth}
-          labelHeight={labelHeight}
-          columns={columns}
-          rows={rows}
-          marginRight={marginRight}
-          marginBottom={marginBottom}
-          barcodeType={barcodeType}
-          lineColor={lineColor}
-          barcodeWidth={barcodeWidth}
-          barcodeHeight={barcodeHeight}
-          paperWidth={paperWidth}
-          paperHeight={paperHeight}
-          showQR={showQR}
-        />
+          <BarcodePreview
+            currentBarcodes={barcodes}
+            labelWidth={labelWidth}
+            labelHeight={labelHeight}
+            columns={columns}
+            rows={rows}
+            marginRight={marginRight}
+            marginBottom={marginBottom}
+            barcodeType={barcodeType}
+            lineColor={lineColor}
+            barcodeWidth={barcodeWidth}
+            barcodeHeight={barcodeHeight}
+            paperWidth={paperWidth}
+            paperHeight={paperHeight}
+            showQR={showQR}
+          />
         </div>
       </div>
     </div>

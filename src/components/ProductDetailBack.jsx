@@ -71,7 +71,7 @@ const ProductDetailBack = ({ barcodeData, addToCart }) => {
           <h2 className="text-3xl font-extrabold text-gray-900">
             {product?.NAMETH || "Unknown Product"}
           </h2>
-          <p className="text-2xl text-black mt-1 border border-gray-300 rounded-lg px-3 py-1 inline-block bg-sky-400 shadow-sm">
+          <p className="text-2xl text-white mt-1 border border-gray-300 rounded-lg px-3 py-1 inline-block bg-blue-500 shadow-sm">
             {product?.CODE || "N/A"}
           </p>
         </div>

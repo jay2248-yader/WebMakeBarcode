@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import ProductDetailCard from "./productDetailCard";
+import AlertIcon from "../assets/alert-svgrepo.svg"; // ✅ import SVG
 
-const ProductDetailList = ({ productPrices = [], barcodeData = [] , addToCart}) => {
+const ProductDetailList = ({ productPrices = [], barcodeData = [], addToCart }) => {
   const [isFlipped, setIsFlipped] = useState(false);
-  const [visibleCount, setVisibleCount] = useState(1); // สำหรับโหลดทีละอัน
+  const [visibleCount, setVisibleCount] = useState(1);
 
   const FlipButton = () => (
     <div className="flex justify-center mb-6">
@@ -29,33 +30,46 @@ const ProductDetailList = ({ productPrices = [], barcodeData = [] , addToCart}) 
 
   const dataToDisplay = isFlipped ? barcodeData : productPrices;
 
-useEffect(() => {
-  setVisibleCount(1);
-  if (dataToDisplay.length <= 1) return;
+  useEffect(() => {
+    setVisibleCount(1);
+    if (dataToDisplay.length <= 1) return;
 
-  let intervalId;
-  intervalId = setInterval(() => {
-    setVisibleCount((prev) => {
-      const next = prev + 1;
-      if (next >= dataToDisplay.length) {
-        clearInterval(intervalId);
-      }
-      return next;
-    });
-  }, 200);
+    let intervalId;
+    intervalId = setInterval(() => {
+      setVisibleCount((prev) => {
+        const next = prev + 1;
+        if (next >= dataToDisplay.length) {
+          clearInterval(intervalId);
+        }
+        return next;
+      });
+    }, 200);
 
-  return () => clearInterval(intervalId); // cleanup ป้องกัน interval ค้าง
-}, [dataToDisplay, isFlipped]);
+    return () => clearInterval(intervalId);
+  }, [dataToDisplay, isFlipped]);
 
-
-  // กรณีไม่มีข้อมูล
+  // ✅ กรณีไม่มีข้อมูล ใช้ SVG ของ alert
   if (!dataToDisplay.length) {
-    return <p className="text-center text-gray-500 mt-4">No product details available.</p>;
+    return (
+<div className="flex items-center justify-center mt-1">
+  <div className="w-full max-w-lg">
+    <div className="bg-white/90 border border-red-400 shadow-xl rounded-2xl p-8 text-center">
+      <div className="mx-auto w-30 h-30 flex items-center justify-center -mt-4">
+        <img src={AlertIcon} alt="Alert" className="w-30 h-30" />
+      </div>
+      <h3 className="text-xl font-bold text-black">ບໍ່ພົບລາຍລະອຽດສິນຄ້າ</h3>
+      <p className="mt-2 text-gray-700">
+        ລອງຄົ້ນຫາດ້ວຍຊື່ຫຼືລະຫັດສິນຄ້າອື່ນ.
+      </p>
+    </div>
+  </div>
+</div>
+
+    );
   }
 
   const cardsToRender = dataToDisplay.slice(0, visibleCount);
 
-  // กรณีการ์ดเดียว จัดตรงกลาง
   if (cardsToRender.length === 1) {
     const item = cardsToRender[0];
     return (
@@ -67,7 +81,7 @@ useEffect(() => {
             isFlipped={isFlipped}
             disableClick={true}
             barcodeData={isFlipped ? [item] : []}
-            addToCart={addToCart} 
+            addToCart={addToCart}
           />
         </div>
       </div>

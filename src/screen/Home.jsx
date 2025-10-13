@@ -1,12 +1,16 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Button from "../components/Button";
 import Input from "../components/Input";
 import ProductList from "../components/productList";
 import useProducts from "../hook/useHome";
 import useAuthStore from "../store/authStore";
 import CartIcon from "../components/cartIcon";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const Home = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const stateSearch = location.state?.search || "";
   const {
     products,
     loading,
@@ -15,9 +19,17 @@ const Home = () => {
     setSearch,
     handleLoadMore,
     handleSearch,
-  } = useProducts(25);
+  } = useProducts(25, stateSearch);
 
   const { user, clearAuth } = useAuthStore();
+
+  // Clear location.state after consuming search (prevents re-search on refresh)
+  useEffect(() => {
+    if (location.state?.search) {
+      navigate(location.pathname, { replace: true, state: {} });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleLogout = () => {
     clearAuth();
@@ -46,7 +58,7 @@ const Home = () => {
           <p className="text-gray-700 text-sm">ລະຫັດພະນັກງານ: {user.code}</p>
           <p className="text-gray-900 font-semibold">{user.name}</p>
         </div>
-        <Button text="LOGOUT" color="red" size="sm" onClick={handleLogout} />
+        <Button text="ອອກຈາກລະບົບ" color="red" size="sm" onClick={handleLogout} />
       </div>
 
       {/* Search bar */}

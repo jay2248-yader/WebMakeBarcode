@@ -65,7 +65,7 @@ const ProductDetailFront = ({
   };
 
   return (
-    <div className="backdrop-blur-lg bg-white/100 shadow-xl rounded-3xl p-6 w-full max-w-4xl mx-auto border border-gray-100">
+    <div className="backdrop-blur-lg bg-white/100 shadow-xl rounded-3xl p-6 w-full max-w-4xl mx-auto border border-gray-200">
       {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 pb-6 border-b border-gradient-to-r from-transparent via-gray-200 to-transparent">
         <div>

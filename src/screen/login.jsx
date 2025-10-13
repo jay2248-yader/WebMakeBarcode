@@ -12,6 +12,7 @@ const Login = () => {
     <div className="flex flex-col items-center justify-center min-h-screen bg-sky-400 p-4">
       <img
         src={CSCLogo}
+        loading="lazy"
         alt="CSC Logo"
         className="w-45 h-45 -mt-30 mb-5 object-contain rounded-2xl p-2 shadow-md bg-white"
       />

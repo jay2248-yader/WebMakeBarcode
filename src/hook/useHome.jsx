@@ -2,11 +2,11 @@ import { useState, useCallback, useEffect } from "react";
 import { fetchProducts } from "../services/productService";
 import { sanitizeInput } from "../utils/sanitize";
 
-export default function useHome(initialLimit = 25) {
+export default function useHome(initialLimit = 25, initialSearch = "") {
   const [products, setProducts] = useState([]);
   const [limit] = useState(initialLimit);
   const [page, setPage] = useState(1);
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState(initialSearch);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
 

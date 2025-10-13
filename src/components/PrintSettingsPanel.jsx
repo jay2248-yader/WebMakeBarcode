@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import useBarcodeCartStore from "../store/barcodeCartStore";
 import ConfirmModal from "./ConfirmModal";
 
@@ -39,6 +39,10 @@ const PrintSettingsPanel = ({
 }) => {
   const { clearCart } = useBarcodeCartStore();
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [customPresets, setCustomPresets] = useState([]);
+  const [presetName, setPresetName] = useState("");
+  const [showDeletePresetModal, setShowDeletePresetModal] = useState(false);
+  const [presetPendingDelete, setPresetPendingDelete] = useState(null);
 
   // ฟังก์ชันช่วย parse number และรองรับค่า 0
   const parseOrDefault = (val, defaultVal) => {
@@ -47,6 +51,56 @@ const PrintSettingsPanel = ({
   };
 
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+
+  // load custom presets from localStorage
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem("barcode_presets");
+      const stored = raw ? JSON.parse(raw) : [];
+      // Merge built-in presets into custom list (unique by name)
+      const combined = [...presets, ...stored].reduce((acc, p) => {
+        if (!acc.some((x) => x.name === p.name)) acc.push(p);
+        return acc;
+      }, []);
+      setCustomPresets(combined);
+      localStorage.setItem("barcode_presets", JSON.stringify(combined));
+    } catch (err) {
+      console.warn("Failed to load presets", err);
+    }
+  }, [presets]);
+
+  const persistCustomPresets = (list) => {
+    try {
+      localStorage.setItem("barcode_presets", JSON.stringify(list));
+    } catch (err) {
+      console.warn("Failed to save presets", err);
+    }
+  };
+
+  const handleSavePreset = () => {
+    const name = presetName.trim();
+    if (!name) return;
+    const newPreset = {
+      name,
+      paperWidth,
+      paperHeight,
+      labelWidth,
+      labelHeight,
+      columns,
+      rows,
+      marginRight,
+      marginBottom,
+    };
+    const next = [...customPresets.filter((p) => p.name !== name), newPreset];
+    setCustomPresets(next);
+    persistCustomPresets(next);
+  };
+
+  const handleDeletePreset = (name) => {
+    const next = customPresets.filter((p) => p.name !== name);
+    setCustomPresets(next);
+    persistCustomPresets(next);
+  };
 
   return (
     <>
@@ -69,18 +123,65 @@ const PrintSettingsPanel = ({
           md:translate-x-0 md:relative md:w-1/3
         `}
       >
-        {/* Presets */}
-        <div className="space-y-3">
-          {presets.map((p) => (
+        {/* Presets moved into My Presets */}
+
+        {/* Custom Presets */}
+        <div className="space-y-3 mt-4">
+          <h3 className="text-sm font-semibold text-gray-700">My Presets</h3>
+          {customPresets.length === 0 ? (
+            <div className="text-xs text-gray-500">No custom presets</div>
+          ) : (
+            customPresets.map((p) => (
+              <div key={p.name} className="flex items-center gap-2">
+                <button
+                  onClick={() => applyPreset(p)}
+                  className="flex-1 bg-white border border-gray-200 rounded-xl px-4 py-2 hover:bg-indigo-50 hover:border-indigo-300 text-left transition-all duration-200 shadow-sm"
+                >
+                  <span className="font-medium text-gray-800">{p.name}</span>
+                </button>
+                <button
+                  onClick={() => { setPresetPendingDelete(p); setShowDeletePresetModal(true); }}
+                  className="px-3 py-2 rounded-lg border text-red-600 border-red-200 hover:bg-red-50"
+                  aria-label={`Delete preset ${p.name}`}
+                >
+                  ✕
+                </button>
+              </div>
+            ))
+          )}
+          <div className="flex items-center gap-2">
+            <input
+              type="text"
+              placeholder="Preset name"
+              value={presetName}
+              onChange={(e) => setPresetName(e.target.value)}
+              className="flex-1 p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+            />
             <button
-              key={p.name}
-              onClick={() => applyPreset(p)}
-              className="w-full bg-gradient-to-r from-gray-50 to-gray-100 border border-gray-200 rounded-xl px-4 py-3 hover:from-indigo-50 hover:to-indigo-100 hover:border-indigo-300 text-left transition-all duration-200 shadow-sm hover:shadow-md"
+              onClick={handleSavePreset}
+              className="px-4 py-2 rounded-lg bg-indigo-600 text-white shadow hover:bg-indigo-700"
             >
-              <span className="font-medium text-gray-800">{p.name}</span>
+              Save
             </button>
-          ))}
+          </div>
         </div>
+
+        {showDeletePresetModal && (
+          <ConfirmModal
+            title={`ຕ້ອງການລົບ Preset "${presetPendingDelete?.name}" ຫຼືບໍ່?`}
+            onConfirm={() => {
+              if (presetPendingDelete?.name) {
+                handleDeletePreset(presetPendingDelete.name);
+              }
+              setShowDeletePresetModal(false);
+              setPresetPendingDelete(null);
+            }}
+            onCancel={() => {
+              setShowDeletePresetModal(false);
+              setPresetPendingDelete(null);
+            }}
+          />
+        )}
 
         {/* Paper Settings */}
         <div className="space-y-4 mt-6">

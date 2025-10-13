@@ -1,8 +1,8 @@
 // src/components/CartIcon.jsx
 import React from "react";
-import { FiShoppingCart } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import useBarcodeCartStore from "../store/barcodeCartStore";
+import BarcodeCartImg from "../assets/Gemini_Generated_Image_744hvn744hvn744h.png"; // ✅ นำเข้ารูปภาพ
 
 const CartIcon = () => {
   const navigate = useNavigate();
@@ -16,8 +16,13 @@ const CartIcon = () => {
     >
       <div className="relative group">
         {/* วงกลมพื้นหลัง */}
-        <div className="w-20 h-20 rounded-full bg-gradient-to-br from-sky-500 to-blue-600 flex items-center justify-center shadow-lg hover:scale-110 hover:shadow-2xl transition-transform duration-300 cursor-pointer">
-          <FiShoppingCart className="text-4xl text-white" />
+        <div className="w-20 h-20 rounded-full bg-gradient-to-br from-sky-500 to-blue-800 flex items-center justify-center shadow-lg hover:scale-110 hover:shadow-2xl transition-transform duration-300 cursor-pointer">
+          <img
+            src={BarcodeCartImg}
+            loading="lazy"
+            alt="Barcode Cart"
+            className="w-full h-full object-cover rounded-full  "
+          />
         </div>
 
         {/* Badge แสดงจำนวนสินค้า */}
