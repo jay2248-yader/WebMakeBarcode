@@ -16,7 +16,7 @@ const presets = [
     name: "3 x 1 (100×25mm)",
     paperWidth: 100,
     paperHeight: 25,
-    labelWidth: 32,
+    labelWidth: 31,
     labelHeight: 24,
     columns: 3,
     rows: 1,
@@ -53,11 +53,11 @@ const BarcodeCart = () => {
 
   const [paperWidth, setPaperWidth] = useState(100);
   const [paperHeight, setPaperHeight] = useState(25);
-  const [labelWidth, setLabelWidth] = useState(32);
+  const [labelWidth, setLabelWidth] = useState(31);
   const [labelHeight, setLabelHeight] = useState(24);
   const [columns, setColumns] = useState(3);
   const [rows, setRows] = useState(1);
-  const [marginRight, setMarginRight] = useState(2);
+  const [marginRight, setMarginRight] = useState(3);
   const [marginBottom, setMarginBottom] = useState(0);
 
   const [barcodeType, setBarcodeType] = useState("CODE128");

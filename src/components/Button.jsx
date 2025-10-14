@@ -15,7 +15,7 @@ const Button = ({
     red: "bg-red-500 hover:bg-red-600",
     blue: "bg-blue-500 hover:bg-blue-600",
     green: "bg-green-500 hover:bg-green-600",
-    blue800: "bg-blue-800 hover:bg-blue-900",
+    blue800: "bg-blue-600 hover:bg-blue-700",
   };
   const sizes = {
     sm: "text-sm py-1 px-4",

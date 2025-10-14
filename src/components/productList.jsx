@@ -51,17 +51,11 @@ const ProductList = ({ products, onLoadMore, hasMore }) => {
           </svg>
         </div>
         <h2 className="text-2xl font-semibold text-gray-700">
-          No Products Found
+          ບໍ່ພົບສິນຄ້າ
         </h2>
-        <p className="text-gray-500 text-sm max-w-sm">
-          We couldn’t find any products that match your search. Try adjusting your filters or check back later.
+        <p className="text-gray-500 text-base max-w-sm">
+          ບໍ່ພົບສິນຄ້າທີ່ກຳລັງຄົ້ນຫາ ກະລຸນາຄົ້ນຫາດ້ວຍຊື່ ຫຼື ລະຫັດສິນຄ້າ ໃໝ່ອີກຄັ້ງ
         </p>
-        <button
-          onClick={() => window.location.reload()}
-          className="mt-4 px-6 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow transition-all duration-200"
-        >
-          🔄 Try Again
-        </button>
       </div>
     );
   }
@@ -99,7 +93,7 @@ const ProductList = ({ products, onLoadMore, hasMore }) => {
 
       {isFetching && (
         <p className="text-center text-gray-500 py-2 animate-pulse">
-          Loading more products...
+          ກຳລັງໂຫຼດສິນຄ້າເພີ່ມເຕີມ...
         </p>
       )}
     </div>

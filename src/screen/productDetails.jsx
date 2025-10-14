@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import ProductDetailList from "../components/productDetailList";
 import CartIcon from "../components/cartIcon";
 import { fetchProductPrice } from "../services/productDetailService";
-import { fetchProductBarcodes } from "../services/productBarcodeService"; 
+import { fetchProductBarcodes } from "../services/productBarcodeService";
 import { fetchProducts } from "../services/productService";
 import Input from "../components/Input";
 import Button from "../components/Button";
@@ -140,7 +140,7 @@ const ProductDetails = () => {
         {showDropdown && (
           <div className="absolute top-full left-0 right-0 z-30 mt-1 bg-white border border-gray-200 rounded-xl shadow-lg max-h-72 overflow-auto">
             {suggestLoading ? (
-              <div className="p-3 text-sm text-gray-500">Loading...</div>
+              <div className="p-3 text-sm text-gray-500">ກຳລັງໂຫຼດ...</div>
             ) : suggestions.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-6 text-gray-400 text-sm">
                 {/* No results with simple SVG */}
@@ -158,7 +158,7 @@ const ProductDetails = () => {
                     d="M3 7h18M3 7l2 14h14l2-14M5 7V5a2 2 0 012-2h10a2 2 0 012 2v2"
                   />
                 </svg>
-                No results found
+                ບໍ່ພົບສິນຄ້າທີ່ຄົ້ນຫາ
               </div>
             ) : (
               suggestions.map((item) => (
@@ -168,8 +168,21 @@ const ProductDetails = () => {
                   onClick={() => handleSelectSuggestion(item)}
                 >
                   <div className="flex flex-col">
-                    <span className="font-medium text-gray-900">{item.NAMEEN || item.NAMETH}</span>
-                    <span className="text-xs text-gray-500">{item.CODE}</span>
+                    <span className="font-medium text-gray-900">
+                      {item.NAMEEN || item.NAMETH}
+                    </span>
+                    <span
+                      className="text-xs text-white 
+          border border-gray-300 
+          bg-blue-500
+          rounded-md 
+          px-2 py-0.5 
+          inline-block 
+          mt-1 
+          w-fit"
+                    >
+                      {item.CODE}
+                    </span>
                   </div>
                 </button>
               ))

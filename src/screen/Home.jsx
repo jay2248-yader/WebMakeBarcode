@@ -19,7 +19,7 @@ const Home = () => {
     setSearch,
     handleLoadMore,
     handleSearch,
-  } = useProducts(25, stateSearch);
+  } = useProducts(10, stateSearch);
 
   const { user, clearAuth } = useAuthStore();
 

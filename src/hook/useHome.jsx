@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect } from "react";
 import { fetchProducts } from "../services/productService";
 import { sanitizeInput } from "../utils/sanitize";
 
-export default function useHome(initialLimit = 25, initialSearch = "") {
+export default function useHome(initialLimit = 10, initialSearch = "") {
   const [products, setProducts] = useState([]);
   const [limit] = useState(initialLimit);
   const [page, setPage] = useState(1);

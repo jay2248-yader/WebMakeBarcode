@@ -43,6 +43,10 @@ const PrintSettingsPanel = ({
   const [presetName, setPresetName] = useState("");
   const [showDeletePresetModal, setShowDeletePresetModal] = useState(false);
   const [presetPendingDelete, setPresetPendingDelete] = useState(null);
+  const [openPaper, setOpenPaper] = useState(false);
+  const [openLabel, setOpenLabel] = useState(false);
+  const [openBarcode, setOpenBarcode] = useState(false);
+  const [showSavePresetModal, setShowSavePresetModal] = useState(false);
 
   // ฟังก์ชันช่วย parse number และรองรับค่า 0
   const parseOrDefault = (val, defaultVal) => {
@@ -141,7 +145,7 @@ const PrintSettingsPanel = ({
                 </button>
                 <button
                   onClick={() => { setPresetPendingDelete(p); setShowDeletePresetModal(true); }}
-                  className="px-3 py-2 rounded-lg border text-red-600 border-red-200 hover:bg-red-50"
+                  className="px-3 py-2 rounded-lg border text-red-600 border-red-500 hover:bg-red-600"
                   aria-label={`Delete preset ${p.name}`}
                 >
                   ✕
@@ -158,10 +162,14 @@ const PrintSettingsPanel = ({
               className="flex-1 p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
             />
             <button
-              onClick={handleSavePreset}
+              onClick={() => {
+                if (presetName.trim()) {
+                  setShowSavePresetModal(true);
+                }
+              }}
               className="px-4 py-2 rounded-lg bg-indigo-600 text-white shadow hover:bg-indigo-700"
             >
-              Save
+              ບັນທຶກ
             </button>
           </div>
         </div>
@@ -183,14 +191,44 @@ const PrintSettingsPanel = ({
           />
         )}
 
+        {showSavePresetModal && (
+          <ConfirmModal
+            title={`ຢືນຢັນການບັນທຶກ Preset: "${presetName.trim()}"`}
+            onConfirm={() => {
+              handleSavePreset();
+              setShowSavePresetModal(false);
+            }}
+            onCancel={() => setShowSavePresetModal(false)}
+          >
+            <div className="space-y-1">
+              <div><span className="font-medium">Paper</span>: {paperWidth} × {paperHeight} mm</div>
+              <div><span className="font-medium">Label</span>: {labelWidth} × {labelHeight} mm</div>
+              <div><span className="font-medium">Grid</span>: {columns} cols × {rows} rows</div>
+              <div><span className="font-medium">Margin</span>: Right {marginRight}, Bottom {marginBottom} mm</div>
+              <div><span className="font-medium">Barcode Type</span>: {barcodeType}</div>
+              <div><span className="font-medium">Line Color</span>: <span className="inline-block align-middle w-3 h-3 rounded-sm border" style={{ backgroundColor: lineColor }} /> <span className="ml-1">{lineColor}</span></div>
+              <div><span className="font-medium">Line Width</span>: {barcodeWidth}</div>
+              <div><span className="font-medium">Height</span>: {barcodeHeight}</div>
+              <div><span className="font-medium">Show QR</span>: {showQR ? "Yes" : "No"}</div>
+            </div>
+          </ConfirmModal>
+        )}
+
         {/* Paper Settings */}
         <div className="space-y-4 mt-6">
-          <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center space-x-3">
+          <h2
+            onClick={() => setOpenPaper(!openPaper)
+            }
+            className="text-xl font-bold text-gray-800 mb-4 flex items-center space-x-3 cursor-pointer select-none"
+            aria-expanded={openPaper}
+          >
             <span className="p-2 rounded-full bg-gradient-to-br from-blue-100 to-blue-200 text-blue-600 shadow-inner">
               📏
             </span>
             <span>Paper Settings</span>
+            <span className="ml-auto text-gray-500">{openPaper ? "▲" : "▼"}</span>
           </h2>
+          {openPaper && (
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -221,16 +259,23 @@ const PrintSettingsPanel = ({
               />
             </div>
           </div>
+          )}
         </div>
 
         {/* Label Settings */}
         <div className="space-y-4 mt-6">
-          <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center space-x-3">
+          <h2
+            onClick={() => setOpenLabel(!openLabel)}
+            className="text-xl font-bold text-gray-800 mb-4 flex items-center space-x-3 cursor-pointer select-none"
+            aria-expanded={openLabel}
+          >
             <span className="p-2 rounded-full bg-gradient-to-br from-green-100 to-green-200 text-green-600 shadow-inner">
               🏷️
             </span>
             <span>Label Settings</span>
+            <span className="ml-auto text-gray-500">{openLabel ? "▲" : "▼"}</span>
           </h2>
+          {openLabel && (
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -313,16 +358,23 @@ const PrintSettingsPanel = ({
               />
             </div>
           </div>
+          )}
         </div>
 
         {/* Barcode Settings */}
         <div className="space-y-4 mt-6">
-          <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center space-x-3">
+          <h2
+            onClick={() => setOpenBarcode(!openBarcode)}
+            className="text-xl font-bold text-gray-800 mb-4 flex items-center space-x-3 cursor-pointer select-none"
+            aria-expanded={openBarcode}
+          >
             <span className="p-2 rounded-full bg-gradient-to-br from-orange-100 to-orange-200 text-orange-600 shadow-inner">
               📊
             </span>
             <span>Barcode Settings</span>
+            <span className="ml-auto text-gray-500">{openBarcode ? "▲" : "▼"}</span>
           </h2>
+          {openBarcode && (
           <div className="space-y-4">
             <div className="flex items-center gap-3">
               <input
@@ -413,6 +465,7 @@ const PrintSettingsPanel = ({
               />
             </div>
           </div>
+          )}
         </div>
 
 
