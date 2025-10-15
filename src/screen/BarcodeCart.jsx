@@ -20,7 +20,7 @@ const presets = [
     labelHeight: 24,
     columns: 3,
     rows: 1,
-    marginRight: 2,
+    marginRight: 3,
     marginBottom: 0,
   },
   {

@@ -34,7 +34,7 @@ const PreviewPanel = ({
   }
 
   return (
-    <div className="flex-1 bg-gradient-to-br from-gray-50 to-gray-100 p-8 overflow-auto">
+    <div className="flex-1 bg-gradient-to-br from-gray-50 to-gray-100 p-5 overflow-auto -mt-5">
       <div className="max-w-full">
         <div 
           className="bg-white p-6 inline-block shadow-xl rounded-2xl border border-gray-200"

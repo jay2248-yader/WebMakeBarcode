@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
 import Input from "../components/Input";
 import Button from "../components/Button";
-import CSCLogo from "../assets/image.png";
+import CSCLogo from "../assets/Logo.svg";
 import useLoginForm from "../hook/UseLogin";
 
 const Login = () => {
@@ -10,15 +10,17 @@ const Login = () => {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-sky-400 p-4">
-      <img
-        src={CSCLogo}
-        loading="lazy"
-        alt="CSC Logo"
-        className="w-45 h-45 -mt-30 mb-5 object-contain rounded-2xl p-2 shadow-md bg-white"
-      />
+<div className="relative overflow-hidden w-56 h-56 flex items-center justify-center bg-white rounded-2xl shadow-md mb-6 -mt-30">
+    <img
+      src={CSCLogo}
+      loading="lazy"
+      alt="CSC Logo"
+      className="object-contain w-full h-full scale-120 transition-transform duration-500"
+    />
+  </div>
       <div className="flex flex-col items-center justify-center bg-white rounded-2xl shadow-2xl overflow-hidden w-full max-w-md p-4 space-y-6">
-        <h1 className="text-2xl sm:text-2xl lg:text-3xl font-bold text-black text-center">
-          ລະບົບສ້າງ Barcode
+        <h1 className="text-2xl sm:text-2xl lg:text-3xl font-bold text-black text-center mb-5">
+          Print Barcode
         </h1>
 
         <div className="flex flex-col w-full space-y-4">

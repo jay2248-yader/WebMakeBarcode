@@ -2,7 +2,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import useBarcodeCartStore from "../store/barcodeCartStore";
-import BarcodeCartImg from "../assets/Gemini_Generated_Image_744hvn744hvn744h.png"; // ✅ นำเข้ารูปภาพ
+import BarcodeCartImg from "../assets/CartIcon.svg"; // ✅ นำเข้ารูปภาพ
 
 const CartIcon = () => {
   const navigate = useNavigate();

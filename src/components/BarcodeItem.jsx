@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import JsBarcode from "jsbarcode";
 import { QRCodeSVG } from "qrcode.react";
-import CSCLogo from "../assets/image.png";
+import CSCLogo from "../assets/image.svg";
 import useBarcodeCartStore from "../store/barcodeCartStore";
 
 const BarcodeItem = ({
@@ -62,7 +62,7 @@ const BarcodeItem = ({
 
   // จำกัดชื่อสินค้าให้แสดงแค่ 10 ตัวอักษร
   const displayName =
-    name.length > 60 ? name.substring(0, 60).trim() + "…" : name;
+    name.length > 58 ? name.substring(0, 58).trim() + "…" : name;
 
   return (
     <div
