@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Button from "../components/Button";
 import Input from "../components/Input";
 import ProductList from "../components/productList";
@@ -6,6 +6,7 @@ import useProducts from "../hook/useHome";
 import useAuthStore from "../store/authStore";
 import CartIcon from "../components/cartIcon";
 import { useLocation, useNavigate } from "react-router-dom";
+import ConfirmModal from "../components/ConfirmModal";
 
 const Home = () => {
   const location = useLocation();
@@ -22,6 +23,7 @@ const Home = () => {
   } = useProducts(10, stateSearch);
 
   const { user, clearAuth } = useAuthStore();
+  const [showConfirm, setShowConfirm] = useState(false);
 
   // Clear location.state after consuming search (prevents re-search on refresh)
   useEffect(() => {
@@ -31,10 +33,18 @@ const Home = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleLogout = () => {
+  const handleLogoutClick = () => {
+    setShowConfirm(true);
+  };
+
+  const confirmLogout = () => {
     clearAuth();
-    alert("Logout success!");
-    window.location.reload();
+    setShowConfirm(false);
+    navigate("/");
+  };
+
+  const cancelLogout = () => {
+    setShowConfirm(false);
   };
 
   if (!user) {
@@ -46,6 +56,7 @@ const Home = () => {
   }
 
   return (
+    <>
     <div className="relative flex flex-col items-center min-h-screen bg-sky-400 p-4 space-y-4 flex-1">
       {/* ✅ Cart Icon */}
       <div className="absolute top-4 right-4 z-20">
@@ -58,7 +69,7 @@ const Home = () => {
           <p className="text-gray-700 text-sm">ລະຫັດພະນັກງານ: {user.code}</p>
           <p className="text-gray-900 font-semibold">{user.name}</p>
         </div>
-        <Button text="ອອກຈາກລະບົບ" color="red" size="sm" onClick={handleLogout} />
+        <Button text="ອອກຈາກລະບົບ" color="red" size="sm" onClick={handleLogoutClick} />
       </div>
 
       {/* Search bar */}
@@ -88,6 +99,14 @@ const Home = () => {
         />
       </div>
     </div>
+    {showConfirm && (
+      <ConfirmModal title="ຢືນຢັນອອກຈາກລະບົບ" onConfirm={confirmLogout} onCancel={cancelLogout}>
+       <div className="flex justify-center items-center">
+      <p className="text-center">ທ່ານແນ່ໃຈວ່າຕ້ອງການອອກຈາກລະບົບ ຫຼື ບໍ່?</p>
+    </div>
+      </ConfirmModal>
+    )}
+    </>
   );
 };
 
