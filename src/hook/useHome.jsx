@@ -9,6 +9,7 @@ export default function useHome(initialLimit = 10, initialSearch = "") {
   const [search, setSearch] = useState(initialSearch);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
+  const [isInitialized, setIsInitialized] = useState(false);
 
   const loadProducts = useCallback(
     async ({ pageNum = 1, query = "" } = {}) => {
@@ -22,7 +23,18 @@ export default function useHome(initialLimit = 10, initialSearch = "") {
 
         setHasMore(data.data_id.products.length === limit);
       } catch (err) {
-        console.error(err);
+        console.error("Error loading products:", err);
+        
+        // ถ้าเป็น authentication error ไม่ต้องแสดง error ใน console เพิ่มเติม
+        // เพราะ interceptor จะจัดการ redirect แล้ว
+        if (err.response?.status !== 401 && err.response?.status !== 500) {
+          console.error("Unexpected error:", err.message);
+        }
+        
+        // Reset products ถ้าเป็น error ในการโหลดครั้งแรก
+        if (pageNum === 1) {
+          setProducts([]);
+        }
       } finally {
         setLoading(false);
       }
@@ -30,23 +42,29 @@ export default function useHome(initialLimit = 10, initialSearch = "") {
     [limit]
   );
 
+  // โหลดครั้งแรกเมื่อ component mount
   useEffect(() => {
-    loadProducts({ pageNum: page, query: search });
-  }, [loadProducts, page, search]);
+    if (!isInitialized) {
+      loadProducts({ pageNum: 1, query: initialSearch });
+      setIsInitialized(true);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  const handleLoadMore = async () => {
-    if (!hasMore) return;
+  const handleLoadMore = useCallback(async () => {
+    if (!hasMore || loading) return;
     const nextPage = page + 1;
     setPage(nextPage);
     await loadProducts({ pageNum: nextPage, query: search });
-  };
+  }, [hasMore, loading, page, search, loadProducts]);
 
-  const handleSearch = async (query) => {
+  const handleSearch = useCallback(async (query) => {
+    if (loading) return; // ป้องกันการ search ซ้ำซ้อน
     const cleanSearch = sanitizeInput(query);
     setPage(1);
     setSearch(cleanSearch);
     await loadProducts({ pageNum: 1, query: cleanSearch });
-  };
+  }, [loading, loadProducts]);
 
   return {
     products,

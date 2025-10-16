@@ -1,20 +1,25 @@
 import { create } from "zustand";
 import { persist, devtools } from "zustand/middleware";
 
+const ONE_DAY = 24 * 60 * 60 * 1000; // 24 ชั่วโมง (ใช้จริงภายหลัง)
+
 export const useBarcodeCartStore = create(
   devtools(
     persist(
       (set, get) => ({
         barcodes: [],
+        lastUpdated: Date.now(),
 
-        // ➕ เพิ่มบาร์โค้ด
         addBarcode: (barcode) => {
           const current = get().barcodes;
           const index = current.findIndex(
             (item) => item.BARCODE === barcode.BARCODE && item.PRICE === barcode.PRICE
           );
+
+          const now = Date.now();
+          set({ lastUpdated: now });
+
           if (index !== -1) {
-            // เพิ่มจำนวนและย้าย item ไปท้ายสุด เพื่อให้เรียงตามการเพิ่มล่าสุด
             const existing = current[index];
             const updated = { ...existing, quantity: existing.quantity + 1 };
             const without = current.filter((_, i) => i !== index);
@@ -24,7 +29,6 @@ export const useBarcodeCartStore = create(
           }
         },
 
-        // ➖ ลดจำนวนทีละ 1
         decreaseBarcode: (barcode) => {
           set({
             barcodes: get().barcodes
@@ -37,7 +41,6 @@ export const useBarcodeCartStore = create(
           });
         },
 
-        // ❌ ลบออกจากตะกร้า
         removeBarcode: (barcode) => {
           set({
             barcodes: get().barcodes.filter(
@@ -46,10 +49,9 @@ export const useBarcodeCartStore = create(
           });
         },
 
-        // 🧹 เคลียร์ทั้งหมด
         clearCart: () => set({ barcodes: [] }),
 
-updateBarcodeName: (barcode, newName) => {
+        updateBarcodeName: (barcode, newName) => {
           set({
             barcodes: get().barcodes.map((item) =>
               item.BARCODE === barcode.BARCODE && item.PRICE === barcode.PRICE
@@ -58,12 +60,30 @@ updateBarcodeName: (barcode, newName) => {
             ),
           });
         },
-
       }),
-      
       {
-        name: "BarcodeCartStore", // key ใน localStorage
+        name: "BarcodeCartStore",
         getStorage: () => localStorage,
+        onRehydrateStorage: () => (state) => {
+          if (!state) return;
+          const now = Date.now();
+          const diff = now - state.lastUpdated;
+
+          // ✅ ถ้าครบเวลาแล้ว เคลียร์ + รีเฟรชหน้า
+          if (diff > ONE_DAY) {
+            localStorage.removeItem("BarcodeCartStore");
+            setTimeout(() => {
+              window.location.reload(); // 🔁 รีเฟรชหน้าเว็บอัตโนมัติ
+            }, 500);
+          } else {
+            // ✅ ตั้งเวลาไว้ให้ auto-refresh เมื่อครบ 24 ชั่วโมงหลังจากนี้
+            const timeLeft = ONE_DAY - diff;
+            setTimeout(() => {
+              localStorage.removeItem("BarcodeCartStore");
+              window.location.reload();
+            }, timeLeft);
+          }
+        },
       }
     )
   )

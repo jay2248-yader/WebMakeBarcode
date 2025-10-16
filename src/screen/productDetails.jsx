@@ -24,6 +24,7 @@ const ProductDetails = () => {
   const [suggestLoading, setSuggestLoading] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const debounceRef = useRef(null);
+  const searchInputRef = useRef(null); // ref สำหรับ search input
 
   // Add to cart function
   const handleAddToCart = (item) => {
@@ -50,6 +51,13 @@ const ProductDetails = () => {
     };
     fetchApiData();
   }, [code]);
+
+  // Focus ที่ search input เมื่อโหลดเสร็จ
+  useEffect(() => {
+    if (!loading && searchInputRef.current) {
+      searchInputRef.current.focus();
+    }
+  }, [loading]);
 
   // Debounced search for suggestions
   useEffect(() => {
@@ -122,10 +130,16 @@ const ProductDetails = () => {
       <div className="w-full max-w-5xl relative">
         <div className="flex w-full gap-2">
           <Input
-            placeholder="ໃສ່ຊື່ສິນຄ້າ ຫຼື ລະຫັດສິນຄ້າ"
+            ref={searchInputRef}
+            placeholder="ໃສ່ຊື່ສິນຄ້າ ຫຼື ລະຫັດສິນຄ້າ (ກົດ Enter ເພື່ອຄົ້ນຫາ)"
             value={search}
             maxLength={20}
             onChange={(e) => setSearch(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && search) {
+                navigate("/home", { state: { search } });
+              }
+            }}
           />
           <Button
             text="ຄົ້ນຫາ"

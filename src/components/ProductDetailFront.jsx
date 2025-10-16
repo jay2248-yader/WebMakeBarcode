@@ -93,7 +93,7 @@ const ProductDetailFront = ({
                     <span className="p-2 rounded-full bg-gradient-to-br from-indigo-100 to-indigo-200 text-indigo-600 shadow-inner">
                       <FaBarcode />
                     </span>
-                    <span className="text-xl font-bold text-gray-800">Barcodes : </span>
+                    <span className="text-xl font-bold text-gray-800">ບາໂຄດ : </span>
                   </div>
                   <p className="font-mono text-lg font-semibold text-gray-800 ml-2 mt-1">
                     {bc.BARCODE}
@@ -141,7 +141,7 @@ const ProductDetailFront = ({
                     }}
                     className="ml-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-medium shadow-sm"
                   >
-                    ➕ Add {quantity}
+                    ➕ ເພີ່ມ {quantity}
                   </button>
                 </div>
               </div>
@@ -154,7 +154,7 @@ const ProductDetailFront = ({
 
       {/* Pricing */}
       <div className="mt-6 pt-4 border-t border-gray-200">
-        <SectionTitle icon={<FaTag />} title="Pricing" />
+        <SectionTitle icon={<FaTag />} title="ລາຄາ" />
         {/* Currency Selection */}
         <div className="mb-4">
           <div className="inline-flex gap-1 bg-gray-100 rounded-md p-1">
@@ -204,7 +204,7 @@ const ProductDetailFront = ({
                 className="hidden"
               />
               <p className="font-semibold text-sm text-gray-600">
-                Price {index + 1}
+                ລາຄາ {index + 1}
               </p>
               <p className="text-green-700 font-black text-2xl mt-2">
                 {price != null
@@ -218,22 +218,22 @@ const ProductDetailFront = ({
 
       {/* Product Groups */}
       <div className="mt-6 pt-6 border-t border-gray-200">
-        <SectionTitle icon={<FaTag />} title="Product Groups" />
+        <SectionTitle icon={<FaTag />} title="ກຸ່ມສິນຄ້າ" />
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div>
-            <p className="font-semibold text-sm text-gray-500">Main Group</p>
+            <p className="font-semibold text-sm text-gray-500">ກຸ່ມຫຼັກ (Main Group)</p>
             <p className="text-gray-800 font-medium mt-1">
               {productData.MAINGROUP || "ບໍ່ມີຂໍ້ມູນ"}
             </p>
           </div>
           <div>
-            <p className="font-semibold text-sm text-gray-500">Subgroup 1</p>
+            <p className="font-semibold text-sm text-gray-500">ກຸ່ມຍ່ອຍ 1 (Subgroup 1)</p>
             <p className="text-gray-800 font-medium mt-1">
               {productData.SUBGROUP1 || "ບໍ່ມີຂໍ້ມູນ"}
             </p>
           </div>
           <div>
-            <p className="font-semibold text-sm text-gray-500">Subgroup 2</p>
+            <p className="font-semibold text-sm text-gray-500">ກຸ່ມຍ່ອນ 2 (Subgroup 2)</p>
             <p className="text-gray-800 font-medium mt-1">
               {productData.SUBGROUP2 || "ບໍ່ມີຂໍ້ມູນ"}
             </p>
@@ -246,12 +246,12 @@ const ProductDetailFront = ({
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-8 gap-x-12">
           {renderInfoItem(
             <FaFileInvoice className="text-lg text-blue-600" />,
-            "Document No",
+            "ເອກະສານເລກທີ",
             DOCNO
           )}
           {renderInfoItem(
             <FaBalanceScale className="text-lg text-purple-600" />,
-            "Unit",
+            "ໜ່ວຍ",
             UNITCODE
           )}
         </div>
@@ -259,10 +259,10 @@ const ProductDetailFront = ({
 
       {/* Location */}
       <div className="mt-6 pt-6 border-t border-gray-200">
-        <SectionTitle icon={<FaWarehouse />} title="Location" />
+        <SectionTitle icon={<FaWarehouse />} title="ສະຖານທີ່" />
         {renderInfoItem(
           <FaWarehouse className="text-lg text-orange-600" />,
-          "Warehouse / Location",
+          "ສາງ / ສະຖານທີ່",
           `${productData.GRWAREHOUSE || "ບໍ່ມີຂໍ້ມູນ"} / ${
             productData.GRLOCATION || "ບໍ່ມີຂໍ້ມູນ"
           }`

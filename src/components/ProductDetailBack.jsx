@@ -92,7 +92,7 @@ const ProductDetailBack = ({ barcodeData, addToCart }) => {
                     <span className="p-2 rounded-full bg-gradient-to-br from-indigo-100 to-indigo-200 text-indigo-600 shadow-inner">
                       <FaBarcode />
                     </span>
-                    <span className="text-xl font-bold text-gray-800">Barcodes</span>
+                    <span className="text-xl font-bold text-gray-800">ບາໂຄດ</span>
                   </div>
                   <p className="font-mono text-lg font-semibold text-gray-800 ml-3 mt-1">
                     {bc.BARCODE || "N/A"}
@@ -141,7 +141,7 @@ const ProductDetailBack = ({ barcodeData, addToCart }) => {
                     className="ml-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-medium shadow-sm"
                     title="ເພີ່ມໂດຍບໍ່ມີລາຄາ - ສາມາດແກ້ໄຂລາຄາພາຍໃນ"
                   >
-                    ➕ Add {quantity}
+                    ➕ ເພີ່ມ {quantity}
                   </button>
                 </div>
               </div>
@@ -154,22 +154,22 @@ const ProductDetailBack = ({ barcodeData, addToCart }) => {
 
       {/* Product Groups */}
       <div className="mt-8 pt-6 border-t border-gray-200">
-        <SectionTitle icon={<FaTag />} title="Product Groups" />
+        <SectionTitle icon={<FaTag />} title="ກຸ່ມສິນຄ້າ" />
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div>
-            <p className="font-semibold text-sm text-gray-500">Main Group</p>
+            <p className="font-semibold text-sm text-gray-500">ກຸ່ມຫຼັກ (Main Group)</p>
             <p className="text-gray-800 font-medium mt-1">
               {product?.MAINGROUP || "ບໍ່ມີຂໍ້ມູນ"}
             </p>
           </div>
           <div>
-            <p className="font-semibold text-sm text-gray-500">Subgroup 1</p>
+            <p className="font-semibold text-sm text-gray-500">ກຸ່ມຍ່ອນ 1 (Subgroup 1)</p>
             <p className="text-gray-800 font-medium mt-1">
               {product?.SUBGROUP1 || "ບໍ່ມີຂໍ້ມູນ"}
             </p>
           </div>
           <div>
-            <p className="font-semibold text-sm text-gray-500">Subgroup 2</p>
+            <p className="font-semibold text-sm text-gray-500">ກຸ່ມຍ່ອນ 2 (Subgroup 2)</p>
             <p className="text-gray-800 font-medium mt-1">
               {product?.SUBGROUP2 || "ບໍ່ມີຂໍ້ມູນ"}
             </p>
@@ -179,16 +179,16 @@ const ProductDetailBack = ({ barcodeData, addToCart }) => {
 
       {/* Location & Units */}
       <div className="mt-8 pt-6 border-t border-gray-200">
-        <SectionTitle icon={<FaWarehouse />} title="Location & Units" />
+        <SectionTitle icon={<FaWarehouse />} title="ສະຖານທີ່ & ໜ່ວຍ" />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {renderInfoItem(
             <FaWarehouse className="text-lg text-orange-600" />,
-            "Warehouse / Location",
+            "ສາງ / ສະຖານທີ່",
             `${product?.GRWAREHOUSE || "N/A"} / ${product?.GRLOCATION || "N/A"}`
           )}
           {renderInfoItem(
             <FaBalanceScale className="text-lg text-purple-600" />,
-            "Stock Unit / Sale Unit",
+            "ໜ່ວຍສະຕ໋ອກ (Stock Unit) / ໜ່ວຍຂາຍ (Sale Unit)",
             `${product?.STOCKUNIT || "N/A"} / ${product?.SALEUNIT || "N/A"}`
           )}
         </div>

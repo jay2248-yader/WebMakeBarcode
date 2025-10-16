@@ -17,9 +17,9 @@ const ProductCard = ({ code, name, grwarehouse, grlocation, unit }) => {
         <h1 className="text-xl font-bold text-blue-800 mb-1">{code}</h1>
         <h2 className="text-lg font-bold text-gray-800 mb-1">{name}</h2>
         <p className="text-sm text-gray-500">
-          GRWAREHOUSE: {grwarehouse} ({grlocation})
+          ຄັງເຄື່ອງ: {grwarehouse} ({grlocation})
         </p>
-        <p className="text-sm text-gray-500">Unit: {unit}</p>
+        <p className="text-sm text-gray-500">ໜ່ວຍ: {unit}</p>
       </div>
     </div>
   );

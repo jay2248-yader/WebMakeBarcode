@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import ProductCard from "./productCard";
 
-const ProductList = ({ products, onLoadMore, hasMore }) => {
+const ProductList = ({ products, onLoadMore, hasMore, loading }) => {
   const [isFetching, setIsFetching] = useState(false);
   const sentinelRef = useRef(null);
 
@@ -29,7 +29,25 @@ const ProductList = ({ products, onLoadMore, hasMore }) => {
     return () => observer.disconnect();
   }, [isFetching, hasMore, onLoadMore]);
 
-  // 🌸 ถ้าไม่มีสินค้า
+  // 🔄 ถ้ากำลังโหลดครั้งแรก
+  if (loading && (!products || products.length === 0)) {
+    return (
+      <div className="flex flex-col items-center justify-center py-20 text-center space-y-4">
+        {/* Loading Spinner */}
+        <div className="relative">
+          <div className="w-16 h-16 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
+        </div>
+        <h2 className="text-xl font-semibold text-gray-700">
+          ກຳລັງໂຫຼດຂໍ້ມູນ...
+        </h2>
+        <p className="text-gray-500 text-sm">
+          ກະລຸນາລໍຖ້າສັກຄູ່
+        </p>
+      </div>
+    );
+  }
+
+  // 🌸 ถ້าไม่มีสินค้า (และไม่ได้กำลังโหลด)
   if (!products || products.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-center space-y-4 bg-gradient-to-b from-gray-50 to-gray-100 rounded-2xl shadow-inner border border-gray-200">

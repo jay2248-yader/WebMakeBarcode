@@ -20,7 +20,7 @@ const Login = () => {
   </div>
       <div className="flex flex-col items-center justify-center bg-white rounded-2xl shadow-2xl overflow-hidden w-full max-w-md p-4 space-y-6">
         <h1 className="text-2xl sm:text-2xl lg:text-3xl font-bold text-black text-center mb-5">
-          Print Barcode
+          ລະບົບພິມບາໂຄດ
         </h1>
 
         <div className="flex flex-col w-full space-y-4">

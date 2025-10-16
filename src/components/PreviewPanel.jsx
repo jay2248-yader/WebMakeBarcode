@@ -17,7 +17,7 @@ const PreviewPanel = ({
   paperWidth,
   paperHeight,
   zoom,
-  showQR = false
+  showQR = false,
 }) => {
   if (!barcodes || barcodes.length === 0) {
     return (
@@ -26,8 +26,8 @@ const PreviewPanel = ({
           <div className="mx-auto mb-4 w-16 h-16 flex items-center justify-center">
             <img src={AlertIcon} alt="Alert" className="w-12 h-12" />
           </div>
-          <h3 className="text-xl font-bold text-black">ບໍ່ພົບ Barcode</h3>
-          <p className="mt-2 text-gray-700">ກະລຸນາໄປເພີ່ມ Barcode ກ່ອນ.</p>
+          <h3 className="text-xl font-bold text-black">ບໍ່ພົບບາໂຄດ</h3>
+          <p className="mt-2 text-gray-700">ກະລຸນາໄປເພີ່ມບາໂຄດກ່ອນ.</p>
         </div>
       </div>
     );
@@ -36,11 +36,11 @@ const PreviewPanel = ({
   return (
     <div className="flex-1 bg-gradient-to-br from-gray-50 to-gray-100 p-5 overflow-auto -mt-5">
       <div className="max-w-full">
-        <div 
+        <div
           className="bg-white p-6 inline-block shadow-xl rounded-2xl border border-gray-200"
           style={{
             transform: `scale(${zoom})`,
-            transformOrigin: 'top left',
+            transformOrigin: "top left",
           }}
         >
           <BarcodePreview

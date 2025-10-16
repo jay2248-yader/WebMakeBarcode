@@ -51,7 +51,7 @@ const ProductDetailList = ({ productPrices = [], barcodeData = [], addToCart }) 
   // ✅ กรณีไม่มีข้อมูล ใช้ SVG ของ alert
   if (!dataToDisplay.length) {
     return (
-<div className="flex items-center justify-center mt-1">
+<div className="flex items-center justify-center mt-5">
   <div className="w-full max-w-lg">
     <div className="bg-white/90 border border-red-400 shadow-xl rounded-2xl p-8 text-center">
       <div className="mx-auto w-30 h-30 flex items-center justify-center -mt-4">

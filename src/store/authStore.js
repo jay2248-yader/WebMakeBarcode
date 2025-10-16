@@ -39,9 +39,29 @@ devtools((set, get) => {
     const initialToken = useTokenStore.getState().token;
     const initialUser = useUserStore.getState().user;
 
+    // ตรวจสอบ token ที่มีอยู่แล้วว่าหมดอายุหรือไม่
+    let isValidToken = false;
+    if (initialToken) {
+      try {
+        const decoded = jwtDecode(initialToken);
+        const now = Date.now();
+        isValidToken = decoded.exp * 1000 > now;
+        
+        if (!isValidToken) {
+          // Token หมดอายุแล้ว ให้ล้างออก
+          useTokenStore.getState().clearToken();
+          useUserStore.getState().clearUser();
+        }
+      } catch {
+        // Token ไม่ valid ให้ล้างออก
+        useTokenStore.getState().clearToken();
+        useUserStore.getState().clearUser();
+      }
+    }
+
     return {
-      token: initialToken,
-      user: initialUser,
+      token: isValidToken ? initialToken : null,
+      user: isValidToken ? initialUser : null,
 
       setAuth: (token, user) => {
         set({ token, user });
@@ -53,7 +73,17 @@ devtools((set, get) => {
           const expiresIn = decoded.exp * 1000 - Date.now();
 
           if (expiresIn > 0) {
-            setTimeout(() => get().clearAuth(), expiresIn);
+            // ล้าง timeout เก่าก่อน (ถ้ามี)
+            if (get().timeoutId) {
+              clearTimeout(get().timeoutId);
+            }
+            
+            const timeoutId = setTimeout(() => {
+              console.log("Token expired, logging out...");
+              get().clearAuth();
+            }, expiresIn);
+            
+            set({ timeoutId });
           } else {
             get().clearAuth();
           }
@@ -62,10 +92,29 @@ devtools((set, get) => {
         }
       },
 
-   clearAuth: () => {
+      clearAuth: () => {
         set({ token: null, user: null });
         useTokenStore.getState().clearToken();
         useUserStore.getState().clearUser();
+        
+        // ล้าง timeout ถ้ามี
+        if (get().timeoutId) {
+          clearTimeout(get().timeoutId);
+          set({ timeoutId: null });
+        }
+      },
+
+      // เพิ่มฟังก์ชันตรวจสอบ token
+      isTokenValid: () => {
+        const token = get().token;
+        if (!token) return false;
+        
+        try {
+          const decoded = jwtDecode(token);
+          return decoded.exp * 1000 > Date.now();
+        } catch {
+          return false;
+        }
       },
     };
   })
