@@ -28,17 +28,29 @@ const Home = () => {
 
   // Clear location.state after consuming search (prevents re-search on refresh)
   useEffect(() => {
-    if (location.state?.search) {
+    let isMounted = true;
+    
+    if (location.state?.search && isMounted) {
       navigate(location.pathname, { replace: true, state: {} });
     }
+    
+    return () => {
+      isMounted = false;
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Focus ที่ search input เมื่อเข้าหน้า
   useEffect(() => {
-    if (searchInputRef.current) {
+    let isMounted = true;
+    
+    if (searchInputRef.current && isMounted) {
       searchInputRef.current.focus();
     }
+    
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const handleLogoutClick = () => {

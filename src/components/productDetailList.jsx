@@ -31,21 +31,33 @@ const ProductDetailList = ({ productPrices = [], barcodeData = [], addToCart }) 
   const dataToDisplay = isFlipped ? barcodeData : productPrices;
 
   useEffect(() => {
-    setVisibleCount(1);
+    let isMounted = true;
+    
+    if (isMounted) {
+      setVisibleCount(1);
+    }
+    
     if (dataToDisplay.length <= 1) return;
 
     let intervalId;
     intervalId = setInterval(() => {
-      setVisibleCount((prev) => {
-        const next = prev + 1;
-        if (next >= dataToDisplay.length) {
-          clearInterval(intervalId);
-        }
-        return next;
-      });
+      if (isMounted) {
+        setVisibleCount((prev) => {
+          const next = prev + 1;
+          if (next >= dataToDisplay.length) {
+            clearInterval(intervalId);
+          }
+          return next;
+        });
+      }
     }, 200);
 
-    return () => clearInterval(intervalId);
+    return () => {
+      isMounted = false;
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
+    };
   }, [dataToDisplay, isFlipped]);
 
   // ✅ กรณีไม่มีข้อมูล ใช้ SVG ของ alert

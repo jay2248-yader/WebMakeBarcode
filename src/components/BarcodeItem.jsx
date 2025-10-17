@@ -23,10 +23,14 @@ const BarcodeItem = ({
 
   // 🧾 สร้างบาร์โค้ด (SVG เพื่อความคมชัดตอนพิมพ์)
   useEffect(() => {
-    if (!svgRef.current) return;
+    let isMounted = true;
+    const currentSvg = svgRef.current;
+    
+    if (!currentSvg || !isMounted) return;
+    
     try {
       JsBarcode(
-        svgRef.current,
+        currentSvg,
         item.BARCODE || item.barcode || item.code || "000000000000",
         {
           format: barcodeType,
@@ -37,13 +41,25 @@ const BarcodeItem = ({
           background: "transparent",
           lineColor: lineColor,
           valid: (valid) => {
-            if (!valid) console.warn("Invalid barcode");
+            if (!valid && isMounted) console.warn("Invalid barcode");
           },
         }
       );
     } catch (error) {
-      console.error("Barcode generation error:", error);
+      if (isMounted) {
+        console.error("Barcode generation error:", error);
+      }
     }
+    
+    return () => {
+      isMounted = false;
+      // Clear SVG content to prevent memory leak
+      if (currentSvg) {
+        while (currentSvg.firstChild) {
+          currentSvg.removeChild(currentSvg.firstChild);
+        }
+      }
+    };
   }, [item, barcodeType, lineColor, barcodeWidth, barcodeHeight]);
 
   // ✏️ แก้ไขชื่อสินค้า
@@ -63,6 +79,12 @@ const BarcodeItem = ({
   // จำกัดชื่อสินค้าให้แสดงแค่ 10 ตัวอักษร
   const displayName =
     name.length > 58 ? name.substring(0, 58).trim() + "…" : name;
+
+  // ตรวจสอบว่ามีราคาหรือไม่
+  const hasPrice = item.PRICE && 
+                   item.PRICE !== "ບໍ່ມີລາຄາ" && 
+                   item.PRICE !== "N/A" && 
+                   item.PRICE !== null;
 
   return (
     <div
@@ -87,7 +109,8 @@ const BarcodeItem = ({
           alignItems: "center",
           position: "relative",
           marginTop: "-3px",
- 
+          // เพิ่ม marginBottom ถ้าไม่มีราคา
+          marginBottom: !hasPrice ? "3px" : "0px",
         }}
       >
         <img

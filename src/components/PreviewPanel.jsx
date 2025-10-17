@@ -34,13 +34,13 @@ const PreviewPanel = ({
   }
 
   return (
-    <div className="flex-1 bg-gradient-to-br from-gray-50 to-gray-100 p-5 overflow-auto -mt-5">
+    <div className="flex-1 bg-gradient-to-br from-gray-50 to-gray-100 p-5 overflow-auto -mt-5 flex items-start justify-center">
       <div className="max-w-full">
         <div
           className="bg-white p-6 inline-block shadow-xl rounded-2xl border border-gray-200"
           style={{
             transform: `scale(${zoom})`,
-            transformOrigin: "top left",
+            transformOrigin: "top center",
           }}
         >
           <BarcodePreview

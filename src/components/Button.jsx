@@ -25,12 +25,24 @@ const Button = ({
 
   const handleClick = async () => {
     if (isDisabled) return;
-    setIsDisabled(true);   
+    
+    let isMounted = true;
+    setIsDisabled(true);
+    
     try {
       await onClick?.();
     } finally {
-      setTimeout(() => setIsDisabled(false), 1500); 
-
+      const timeoutId = setTimeout(() => {
+        if (isMounted) {
+          setIsDisabled(false);
+        }
+      }, 1500);
+      
+      // Store cleanup function
+      return () => {
+        isMounted = false;
+        clearTimeout(timeoutId);
+      };
     }
   };
 

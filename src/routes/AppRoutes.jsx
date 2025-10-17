@@ -12,10 +12,13 @@ export default function AppRoutes() {
   return (
     <Routes>
       {/* token  not → Login */}
-      <Route
-        path="/"
-        element={token ? <Navigate to="/home" /> : <Login />}
-      />
+<Route
+  path="/"
+  element={
+    token === undefined ? <div>Loading...</div> : token ? <Navigate to="/home" /> : <Login />
+  }
+/>
+
       {/* Home page */}
       <Route
         path="/home"

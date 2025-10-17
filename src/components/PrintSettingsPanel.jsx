@@ -36,6 +36,8 @@ const PrintSettingsPanel = ({
   handlePrint,
   showQR,
   setShowQR,
+  isPanelOpen,
+  setIsPanelOpen,
 }) => {
   const { clearCart } = useBarcodeCartStore();
   const [showConfirmModal, setShowConfirmModal] = useState(false);
@@ -47,7 +49,6 @@ const PrintSettingsPanel = ({
   const [openLabel, setOpenLabel] = useState(false);
   const [openBarcode, setOpenBarcode] = useState(false);
   const [showSavePresetModal, setShowSavePresetModal] = useState(false);
-  const [isMobileOpen, setIsMobileOpen] = useState(false);
 
   const parseOrDefault = (val, defaultVal) => {
     const num = parseFloat(val);
@@ -55,6 +56,8 @@ const PrintSettingsPanel = ({
   };
 
   useEffect(() => {
+    let isMounted = true;
+    
     try {
       const raw = localStorage.getItem("barcode_presets");
       const stored = raw ? JSON.parse(raw) : [];
@@ -62,11 +65,20 @@ const PrintSettingsPanel = ({
         if (!acc.some((x) => x.name === p.name)) acc.push(p);
         return acc;
       }, []);
-      setCustomPresets(combined);
-      localStorage.setItem("barcode_presets", JSON.stringify(combined));
+      
+      if (isMounted) {
+        setCustomPresets(combined);
+        localStorage.setItem("barcode_presets", JSON.stringify(combined));
+      }
     } catch (err) {
-      console.warn("Failed to load presets", err);
+      if (isMounted) {
+        console.warn("Failed to load presets", err);
+      }
     }
+    
+    return () => {
+      isMounted = false;
+    };
   }, [presets]);
 
   const persistCustomPresets = (list) => {
@@ -115,7 +127,11 @@ const PrintSettingsPanel = ({
       <span className="flex-1 text-left font-semibold text-gray-800 group-hover:text-gray-900">
         {title}
       </span>
-      <span className={`text-gray-500 transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`}>
+      <span
+        className={`text-gray-500 transition-transform duration-300 ${
+          isOpen ? "rotate-180" : ""
+        }`}
+      >
         ▼
       </span>
     </button>
@@ -123,28 +139,71 @@ const PrintSettingsPanel = ({
 
   return (
     <>
-      {/* ปุ่ม mobile toggle */}
-      <div className="md:hidden fixed top-4 left-4 z-50">
-        <button
-          onClick={() => setIsMobileOpen(!isMobileOpen)}
-          className="p-3 bg-indigo-500 text-white rounded-full shadow-lg hover:scale-110 transition-transform"
+      {/* ปุ่มสามขีด (Hamburger Menu) - แสดงทั้ง mobile และ desktop */}
+      <button
+        onClick={() => setIsPanelOpen(!isPanelOpen)}
+        className={`
+          fixed top-4 left-4 z-50
+          p-5 bg-indigo-500 text-white rounded-full shadow-lg 
+          hover:scale-110 hover:bg-indigo-600 active:scale-95
+          transition-all duration-200
+          ${isPanelOpen ? "bg-indigo-600" : ""}
+        `}
+        aria-label="Toggle Settings Panel"
+        title="ເປີດ/ປິດ ການຕັ້ງຄ່າ"
+      >
+        <svg 
+          className="w-7 h-7" 
+          fill="none" 
+          stroke="currentColor" 
+          viewBox="0 0 24 24"
         >
-          ☰
-        </button>
-      </div>
+          {isPanelOpen ? (
+            // X icon เมื่อเปิด
+            <path 
+              strokeLinecap="round" 
+              strokeLinejoin="round" 
+              strokeWidth={2} 
+              d="M6 18L18 6M6 6l12 12" 
+            />
+          ) : (
+            // Hamburger icon เมื่อปิด
+            <path 
+              strokeLinecap="round" 
+              strokeLinejoin="round" 
+              strokeWidth={2} 
+              d="M4 6h16M4 12h16M4 18h16" 
+            />
+          )}
+        </svg>
+      </button>
 
-      {/* Panel */}
+      {/* Overlay - คลิกข้างนอกเพื่อปิด (แสดงเฉพาะ mobile) */}
+      {isPanelOpen && (
+        <div
+          className="md:hidden fixed inset-0 bg-black/30 backdrop-blur-sm z-40 transition-opacity duration-300"
+          onClick={() => setIsPanelOpen(false)}
+          aria-hidden="true"
+        />
+      )}
+
+      {/* Panel - ซ่อนไว้ตอนแรกทั้ง mobile และ desktop */}
       <div
         className={`
-          fixed top-0 left-0 h-screen bg-white/90 backdrop-blur-lg shadow-xl border-r border-gray-200/50 p-6 overflow-auto
-          transition-transform duration-300
-          ${isMobileOpen ? "translate-x-0" : "-translate-x-full"}
-          md:translate-x-0 md:relative md:w-1/3
+          fixed top-0 left-0 h-screen w-full sm:w-96 md:w-[400px] lg:w-[450px]
+          bg-white/95 backdrop-blur-lg shadow-2xl border-r border-gray-200/50 
+          p-6 overflow-auto z-40
+          transition-transform duration-300 ease-in-out
+          ${isPanelOpen ? "translate-x-0" : "-translate-x-full"}
         `}
       >
+
+
         {/* Custom Presets */}
-        <div className="space-y-3 mb-6">
-          <h3 className="text-sm font-semibold text-gray-700">ຄ່າທີ່ບັນທຶກໄວ້ (My Presets)</h3>
+        <div className="space-y-3 mb-6 mt-18">
+          <h3 className="text-sm font-semibold text-gray-700">
+            ຄ່າທີ່ບັນທຶກໄວ້ (My Presets)
+          </h3>
           {customPresets.length === 0 ? (
             <div className="text-xs text-gray-500">No custom presets</div>
           ) : (
@@ -175,6 +234,7 @@ const PrintSettingsPanel = ({
               placeholder="ຊື່ຄ່າ (Preset Name)"
               value={presetName}
               onChange={(e) => setPresetName(e.target.value)}
+              maxLength={100}
               className="flex-1 p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
             />
             <button
@@ -183,7 +243,13 @@ const PrintSettingsPanel = ({
                   setShowSavePresetModal(true);
                 }
               }}
-              className="px-4 py-2 rounded-lg bg-blue-600 text-white shadow hover:bg-blue-700"
+              disabled={!presetName.trim()} 
+              className={`px-4 py-2 rounded-lg shadow text-white 
+      ${
+        presetName.trim()
+          ? "bg-blue-600 hover:bg-blue-700 cursor-pointer"
+          : "bg-gray-400 cursor-not-allowed"
+      }`}
             >
               ບັນທຶກ
             </button>
@@ -218,23 +284,30 @@ const PrintSettingsPanel = ({
           >
             <div className="space-y-1">
               <div>
-                <span className="font-medium">Paper</span>: {paperWidth} × {paperHeight} mm
+                <span className="font-medium">Paper</span>: {paperWidth} ×{" "}
+                {paperHeight} mm
               </div>
               <div>
-                <span className="font-medium">Label</span>: {labelWidth} × {labelHeight} mm
+                <span className="font-medium">Label</span>: {labelWidth} ×{" "}
+                {labelHeight} mm
               </div>
               <div>
-                <span className="font-medium">Grid</span>: {columns} cols × {rows} rows
+                <span className="font-medium">Grid</span>: {columns} cols ×{" "}
+                {rows} rows
               </div>
               <div>
-                <span className="font-medium">Margin</span>: Right {marginRight}, Bottom {marginBottom} mm
+                <span className="font-medium">Margin</span>: Right {marginRight}
+                , Bottom {marginBottom} mm
               </div>
               <div>
                 <span className="font-medium">Barcode Type</span>: {barcodeType}
               </div>
               <div>
                 <span className="font-medium">Line Color</span>:{" "}
-                <span className="inline-block align-middle w-3 h-3 rounded-sm border" style={{ backgroundColor: lineColor }} />{" "}
+                <span
+                  className="inline-block align-middle w-3 h-3 rounded-sm border"
+                  style={{ backgroundColor: lineColor }}
+                />{" "}
                 <span className="ml-1">{lineColor}</span>
               </div>
               <div>
@@ -244,7 +317,8 @@ const PrintSettingsPanel = ({
                 <span className="font-medium">Height</span>: {barcodeHeight}
               </div>
               <div>
-                <span className="font-medium">Show QR</span>: {showQR ? "Yes" : "No"}
+                <span className="font-medium">Show QR</span>:{" "}
+                {showQR ? "Yes" : "No"}
               </div>
             </div>
           </ConfirmModal>
@@ -268,7 +342,9 @@ const PrintSettingsPanel = ({
                   type="number"
                   min={0}
                   value={paperWidth}
-                  onChange={(e) => setPaperWidth(parseOrDefault(e.target.value, 0))}
+                  onChange={(e) =>
+                    setPaperWidth(parseOrDefault(e.target.value, 0))
+                  }
                   className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                 />
               </div>
@@ -280,7 +356,9 @@ const PrintSettingsPanel = ({
                   type="number"
                   min={0}
                   value={paperHeight}
-                  onChange={(e) => setPaperHeight(parseOrDefault(e.target.value, 0))}
+                  onChange={(e) =>
+                    setPaperHeight(parseOrDefault(e.target.value, 0))
+                  }
                   className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                 />
               </div>
@@ -307,7 +385,9 @@ const PrintSettingsPanel = ({
                     type="number"
                     min={0}
                     value={labelWidth}
-                    onChange={(e) => setLabelWidth(parseOrDefault(e.target.value, 0))}
+                    onChange={(e) =>
+                      setLabelWidth(parseOrDefault(e.target.value, 0))
+                    }
                     className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors"
                   />
                 </div>
@@ -319,7 +399,9 @@ const PrintSettingsPanel = ({
                     type="number"
                     min={0}
                     value={labelHeight}
-                    onChange={(e) => setLabelHeight(parseOrDefault(e.target.value, 0))}
+                    onChange={(e) =>
+                      setLabelHeight(parseOrDefault(e.target.value, 0))
+                    }
                     className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors"
                   />
                 </div>
@@ -331,7 +413,9 @@ const PrintSettingsPanel = ({
                     type="number"
                     min={0}
                     value={columns}
-                    onChange={(e) => setColumns(parseOrDefault(e.target.value, 0))}
+                    onChange={(e) =>
+                      setColumns(parseOrDefault(e.target.value, 0))
+                    }
                     className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors"
                   />
                 </div>
@@ -355,7 +439,9 @@ const PrintSettingsPanel = ({
                     type="number"
                     min={0}
                     value={marginRight}
-                    onChange={(e) => setMarginRight(parseOrDefault(e.target.value, 0))}
+                    onChange={(e) =>
+                      setMarginRight(parseOrDefault(e.target.value, 0))
+                    }
                     className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors"
                   />
                 </div>
@@ -367,7 +453,9 @@ const PrintSettingsPanel = ({
                     type="number"
                     min={0}
                     value={marginBottom}
-                    onChange={(e) => setMarginBottom(parseOrDefault(e.target.value, 0))}
+                    onChange={(e) =>
+                      setMarginBottom(parseOrDefault(e.target.value, 0))
+                    }
                     className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors"
                   />
                 </div>
@@ -394,7 +482,10 @@ const PrintSettingsPanel = ({
                   onChange={(e) => setShowQR(e.target.checked)}
                   className="h-4 w-4 rounded border-gray-300 text-orange-600 focus:ring-orange-500"
                 />
-                <label htmlFor="toggle-show-qr" className="text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="toggle-show-qr"
+                  className="text-sm font-medium text-gray-700"
+                >
                   ສະແດງ QR ໃນປ້າຍ
                 </label>
               </div>
@@ -434,7 +525,9 @@ const PrintSettingsPanel = ({
                     max={4}
                     step={0.1}
                     value={barcodeWidth}
-                    onChange={(e) => setBarcodeWidth(parseOrDefault(e.target.value, 0))}
+                    onChange={(e) =>
+                      setBarcodeWidth(parseOrDefault(e.target.value, 0))
+                    }
                     className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors"
                   />
                 </div>
@@ -448,32 +541,37 @@ const PrintSettingsPanel = ({
                   type="number"
                   min={0}
                   value={barcodeHeight}
-                  onChange={(e) => setBarcodeHeight(parseOrDefault(e.target.value, 0))}
+                  onChange={(e) =>
+                    setBarcodeHeight(parseOrDefault(e.target.value, 0))
+                  }
                   className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors"
                 />
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  ຊູມ: {zoom}x
-                </label>
-                <input
-                  type="range"
-                  min={0.6}
-                  max={2}
-                  step={0.1}
-                  value={zoom}
-                  onChange={(e) => setZoom(parseFloat(e.target.value))}
-                  className="w-full h-2 bg-gradient-to-r from-orange-300 to-orange-500 rounded-lg appearance-none cursor-pointer slider"
-                />
-              </div>
+
             </div>
           )}
+        </div>
+
+          <div className="space-y-2 mb-6">
+          <label className="block text-sm font-medium text-gray-700 mb-2 text-center">
+            🔍 ຊູມ: {zoom}x
+          </label>
+          <input
+            type="range"
+            min={0.6}
+            max={2}
+            step={0.1}
+            value={zoom}
+            onChange={(e) => setZoom(parseFloat(e.target.value))}
+            className="w-full h-2 bg-gradient-to-r from-blue-300 to-blue-500 rounded-lg appearance-none cursor-pointer"
+          />
         </div>
 
         {/* Action Buttons */}
         <div className="space-y-3 mt-6">
           <div className="grid">
+            
             <button
               onClick={handlePrint}
               disabled={isGenerating || barcodes.length === 0}

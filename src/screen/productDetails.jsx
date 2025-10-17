@@ -34,58 +34,96 @@ const ProductDetails = () => {
 
   // Fetch product prices and barcode data
   useEffect(() => {
+    let isMounted = true;
+    
     const fetchApiData = async () => {
-      setLoading(true);
+      if (isMounted) {
+        setLoading(true);
+      }
+      
       try {
         const priceRes = await fetchProductPrice(code);
-        setProductPrices(priceRes?.data_id?.productprices || []);
-
         const barcodeRes = await fetchProductBarcodes(code);
-        setBarcodeData(barcodeRes?.data_id?.products || []);
+        
+        if (isMounted) {
+          setProductPrices(priceRes?.data_id?.productprices || []);
+          setBarcodeData(barcodeRes?.data_id?.products || []);
+        }
       } catch (err) {
         console.error("Error fetching product data:", err);
-        setError("Failed to load product details.");
+        if (isMounted) {
+          setError("Failed to load product details.");
+        }
       } finally {
-        setLoading(false);
+        if (isMounted) {
+          setLoading(false);
+        }
       }
     };
+    
     fetchApiData();
+    
+    return () => {
+      isMounted = false;
+    };
   }, [code]);
 
   // Focus ที่ search input เมื่อโหลดเสร็จ
   useEffect(() => {
-    if (!loading && searchInputRef.current) {
+    let isMounted = true;
+    
+    if (!loading && searchInputRef.current && isMounted) {
       searchInputRef.current.focus();
     }
+    
+    return () => {
+      isMounted = false;
+    };
   }, [loading]);
 
   // Debounced search for suggestions
   useEffect(() => {
+    let isMounted = true;
+    
     if (!search) {
       setSuggestions([]);
       setShowDropdown(false);
       return;
     }
 
-    setSuggestLoading(true);
+    if (isMounted) {
+      setSuggestLoading(true);
+    }
+    
     if (debounceRef.current) clearTimeout(debounceRef.current);
 
     debounceRef.current = setTimeout(async () => {
       try {
         const data = await fetchProducts({ page: 1, limit: 10, search });
         const items = data?.data_id?.products || [];
-        setSuggestions(items);
-        setShowDropdown(true);
+        
+        if (isMounted) {
+          setSuggestions(items);
+          setShowDropdown(true);
+        }
       } catch {
-        setSuggestions([]);
-        setShowDropdown(false);
+        if (isMounted) {
+          setSuggestions([]);
+          setShowDropdown(false);
+        }
       } finally {
-        setSuggestLoading(false);
+        if (isMounted) {
+          setSuggestLoading(false);
+        }
       }
     }, 300);
 
     return () => {
-      if (debounceRef.current) clearTimeout(debounceRef.current);
+      isMounted = false;
+      if (debounceRef.current) {
+        clearTimeout(debounceRef.current);
+        debounceRef.current = null;
+      }
     };
   }, [search]);
 

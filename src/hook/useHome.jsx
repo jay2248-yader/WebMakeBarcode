@@ -13,15 +13,19 @@ export default function useHome(initialLimit = 10, initialSearch = "") {
 
   const loadProducts = useCallback(
     async ({ pageNum = 1, query = "" } = {}) => {
+      let isMounted = true;
+      
       try {
         setLoading(true);
         const data = await fetchProducts({ page: pageNum, limit, search: query });
 
-        setProducts((prev) =>
-          pageNum === 1 ? data.data_id.products : [...prev, ...data.data_id.products]
-        );
+        if (isMounted) {
+          setProducts((prev) =>
+            pageNum === 1 ? data.data_id.products : [...prev, ...data.data_id.products]
+          );
 
-        setHasMore(data.data_id.products.length === limit);
+          setHasMore(data.data_id.products.length === limit);
+        }
       } catch (err) {
         console.error("Error loading products:", err);
         
@@ -32,22 +36,34 @@ export default function useHome(initialLimit = 10, initialSearch = "") {
         }
         
         // Reset products ถ้าเป็น error ในการโหลดครั้งแรก
-        if (pageNum === 1) {
+        if (pageNum === 1 && isMounted) {
           setProducts([]);
         }
       } finally {
-        setLoading(false);
+        if (isMounted) {
+          setLoading(false);
+        }
       }
+      
+      return () => {
+        isMounted = false;
+      };
     },
     [limit]
   );
 
   // โหลดครั้งแรกเมื่อ component mount
   useEffect(() => {
-    if (!isInitialized) {
+    let isMounted = true;
+    
+    if (!isInitialized && isMounted) {
       loadProducts({ pageNum: 1, query: initialSearch });
       setIsInitialized(true);
     }
+    
+    return () => {
+      isMounted = false;
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

@@ -7,7 +7,8 @@ const ProductList = ({ products, onLoadMore, hasMore, loading }) => {
 
   // IntersectionObserver สำหรับ Infinite Scroll
   useEffect(() => {
-    if (!sentinelRef.current) return;
+    const currentSentinel = sentinelRef.current;
+    if (!currentSentinel) return;
 
     const observer = new IntersectionObserver(
       async ([entry]) => {
@@ -25,8 +26,14 @@ const ProductList = ({ products, onLoadMore, hasMore, loading }) => {
       { root: null, rootMargin: "0px", threshold: 1.0 }
     );
 
-    observer.observe(sentinelRef.current);
-    return () => observer.disconnect();
+    observer.observe(currentSentinel);
+    
+    return () => {
+      if (currentSentinel) {
+        observer.unobserve(currentSentinel);
+      }
+      observer.disconnect();
+    };
   }, [isFetching, hasMore, onLoadMore]);
 
   // 🔄 ถ้ากำลังโหลดครั้งแรก

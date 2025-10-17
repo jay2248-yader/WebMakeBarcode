@@ -93,7 +93,9 @@ const ProductDetailFront = ({
                     <span className="p-2 rounded-full bg-gradient-to-br from-indigo-100 to-indigo-200 text-indigo-600 shadow-inner">
                       <FaBarcode />
                     </span>
-                    <span className="text-xl font-bold text-gray-800">ບາໂຄດ : </span>
+                    <span className="text-xl font-bold text-gray-800">
+                      ບາໂຄດ :{" "}
+                    </span>
                   </div>
                   <p className="font-mono text-lg font-semibold text-gray-800 ml-2 mt-1">
                     {bc.BARCODE}
@@ -116,13 +118,16 @@ const ProductDetailFront = ({
                       −
                     </button>
                     <input
-                      type="number"
-                      min="1"
-                      max="999"
+                      type="text"
+                      inputMode="numeric"
+                      pattern="[0-9]*"
                       value={quantity}
-                      onChange={(e) =>
-                        setQuantity(Math.max(1, parseInt(e.target.value) || 1))
-                      }
+                      onChange={(e) => {
+                        const val = e.target.value.replace(/\D/g, ""); // ลบอักขระที่ไม่ใช่ตัวเลข
+                        setQuantity(
+                          val === "" ? 1 : Math.max(1, parseInt(val))
+                        );
+                      }}
                       className="w-12 text-center border border-gray-300 rounded-lg py-1 focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
                     />
                     <button
@@ -207,9 +212,7 @@ const ProductDetailFront = ({
                 ລາຄາ {index + 1}
               </p>
               <p className="text-green-700 font-black text-2xl mt-2">
-                {price != null
-                  ? `${price} ${currencySuffix}`
-                  : "ບໍ່ມີຂໍ້ມູນ"}
+                {price != null ? `${price} ${currencySuffix}` : "ບໍ່ມີຂໍ້ມູນ"}
               </p>
             </label>
           ))}
@@ -221,19 +224,25 @@ const ProductDetailFront = ({
         <SectionTitle icon={<FaTag />} title="ກຸ່ມສິນຄ້າ" />
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div>
-            <p className="font-semibold text-sm text-gray-500">ກຸ່ມຫຼັກ (Main Group)</p>
+            <p className="font-semibold text-sm text-gray-500">
+              ກຸ່ມຫຼັກ (Main Group)
+            </p>
             <p className="text-gray-800 font-medium mt-1">
               {productData.MAINGROUP || "ບໍ່ມີຂໍ້ມູນ"}
             </p>
           </div>
           <div>
-            <p className="font-semibold text-sm text-gray-500">ກຸ່ມຍ່ອຍ 1 (Subgroup 1)</p>
+            <p className="font-semibold text-sm text-gray-500">
+              ກຸ່ມຍ່ອຍ 1 (Subgroup 1)
+            </p>
             <p className="text-gray-800 font-medium mt-1">
               {productData.SUBGROUP1 || "ບໍ່ມີຂໍ້ມູນ"}
             </p>
           </div>
           <div>
-            <p className="font-semibold text-sm text-gray-500">ກຸ່ມຍ່ອນ 2 (Subgroup 2)</p>
+            <p className="font-semibold text-sm text-gray-500">
+              ກຸ່ມຍ່ອນ 2 (Subgroup 2)
+            </p>
             <p className="text-gray-800 font-medium mt-1">
               {productData.SUBGROUP2 || "ບໍ່ມີຂໍ້ມູນ"}
             </p>

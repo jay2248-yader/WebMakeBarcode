@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist, devtools } from "zustand/middleware";
 
-const ONE_DAY = 24 * 60 * 60 * 1000; // 24 ชั่วโมง (ใช้จริงภายหลัง)
+const ONE_DAY = 8 * 60 * 60 * 1000; // 24 ชั่วโมง (ใช้จริงภายหลัง)
 
 export const useBarcodeCartStore = create(
   devtools(
@@ -64,25 +64,35 @@ export const useBarcodeCartStore = create(
       {
         name: "BarcodeCartStore",
         getStorage: () => localStorage,
-        onRehydrateStorage: () => (state) => {
-          if (!state) return;
-          const now = Date.now();
-          const diff = now - state.lastUpdated;
+        onRehydrateStorage: () => {
+          let timeoutId = null;
+          
+          return (state) => {
+            if (!state) return;
+            const now = Date.now();
+            const diff = now - state.lastUpdated;
 
-          // ✅ ถ้าครบเวลาแล้ว เคลียร์ + รีเฟรชหน้า
-          if (diff > ONE_DAY) {
-            localStorage.removeItem("BarcodeCartStore");
-            setTimeout(() => {
-              window.location.reload(); // 🔁 รีเฟรชหน้าเว็บอัตโนมัติ
-            }, 500);
-          } else {
-            // ✅ ตั้งเวลาไว้ให้ auto-refresh เมื่อครบ 24 ชั่วโมงหลังจากนี้
-            const timeLeft = ONE_DAY - diff;
-            setTimeout(() => {
+            // ✅ ถ้าครบเวลาแล้ว เคลียร์ + รีเฟรชหน้า
+            if (diff > ONE_DAY) {
               localStorage.removeItem("BarcodeCartStore");
-              window.location.reload();
-            }, timeLeft);
-          }
+              timeoutId = setTimeout(() => {
+                window.location.reload(); // 🔁 รีเฟรชหน้าเว็บอัตโนมัติ
+              }, 500);
+            } else {
+              // ✅ ตั้งเวลาไว้ให้ auto-refresh เมื่อครบ 24 ชั่วโมงหลังจากนี้
+              const timeLeft = ONE_DAY - diff;
+              
+              // Clear previous timeout if exists
+              if (timeoutId) {
+                clearTimeout(timeoutId);
+              }
+              
+              timeoutId = setTimeout(() => {
+                localStorage.removeItem("BarcodeCartStore");
+                window.location.reload();
+              }, timeLeft);
+            }
+          };
         },
       }
     )
